@@ -315,7 +315,7 @@ export default function SolarCalculator() {
                     onClick={handleCalculateStep1}
                     className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5"
                   >
-                    <span>{language === "hi" ? "गणना करें →" : "Calculate →"}</span>
+                    <span>{t.calculator.calcAction}</span>
                   </button>
                 </div>
               </div>
@@ -397,7 +397,7 @@ export default function SolarCalculator() {
                           >
                             {isSelected && <div className="w-1 h-1 rounded-full bg-white" />}
                           </div>
-                          <span className="truncate">{b.name}</span>
+                          <span className="break-words leading-tight">{b.name}</span>
                         </button>
                       );
                     })}
@@ -411,7 +411,7 @@ export default function SolarCalculator() {
                     onClick={handleProceedToForm}
                     className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5"
                   >
-                    <span>{language === "hi" ? "2% छूट के लिए आगे बढ़ें →" : "Proceed to Get 2% Discount →"}</span>
+                    <span>{t.calculator.proceedDiscount}</span>
                   </button>
                 </div>
               </div>

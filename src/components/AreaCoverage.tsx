@@ -63,25 +63,25 @@ export default function AreaCoverage() {
                     setSelectedArea(areaName);
                     setShowStatus(true);
                   }}
-                  className={`py-2.5 px-3 rounded-xl border text-xs font-semibold text-center transition-all truncate ${
+                  className={`py-2.5 px-2 sm:px-3 rounded-xl border text-xs font-semibold text-center transition-all break-words leading-tight flex items-center justify-center min-h-[44px] ${
                     isSelected
                       ? "bg-emerald-50 border-emerald-600 text-emerald-950 font-bold shadow-xs"
                       : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
                   }`}
                 >
-                  {areaName}
+                  <span>{areaName}</span>
                 </button>
               );
             })}
           </div>
 
           {showStatus && (
-            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center justify-between animate-in fade-in duration-150">
-              <div className="flex items-center gap-1.5 truncate">
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center justify-between gap-2 animate-in fade-in duration-150">
+              <div className="flex items-center gap-1.5 min-w-0">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="truncate">Active service in {selectedArea}</span>
+                <span className="break-words">Active service & free survey in {selectedArea}</span>
               </div>
-              <a href="#calculator" className="text-emerald-700 underline text-xs font-extrabold shrink-0 ml-2">
+              <a href="#calculator" className="text-emerald-700 underline text-xs font-extrabold shrink-0 ml-2 whitespace-nowrap">
                 Book Survey
               </a>
             </div>

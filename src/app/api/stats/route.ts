@@ -7,7 +7,9 @@ export async function GET() {
   try {
     await ensureDatabaseSeeded();
 
+    // 100% Real-time database counts
     const totalLeads = await Lead.countDocuments();
+    const newLeads = await Lead.countDocuments({ status: "New" });
     const contacted = await Lead.countDocuments({ status: { $ne: "New" } });
     const qualified = await Lead.countDocuments({
       status: { $in: ["Qualified", "Site Visit", "Quotation", "Installed"] }
@@ -20,54 +22,65 @@ export async function GET() {
     });
     const installations = await Lead.countDocuments({ status: "Installed" });
 
-    // Aggregate total revenue / commission
+    // Leads created in last 7 days
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const leadsLast7Days = await Lead.countDocuments({
+      createdAt: { $gte: sevenDaysAgo }
+    });
+
+    // Real aggregate revenue & commission from MongoDB
+    const allLeads = await Lead.find().lean();
+    const totalProjectValue = allLeads.reduce((acc, curr: any) => acc + (curr.estimatedCost || 0), 0);
+    const totalInstalledValue = allLeads
+      .filter((l: any) => l.status === "Installed")
+      .reduce((acc, curr: any) => acc + (curr.estimatedCost || 165000), 0);
+    
+    // Commission earned: ₹21,000 per install + ₹1,500 per site visit
     const totalCommission = installations * 21000 + siteVisits * 1500;
 
-    // Display robust baseline + real count
-    const baseLeads = Math.max(248, totalLeads);
-    const baseQualified = Math.max(132, qualified);
-    const baseSiteVisits = Math.max(68, siteVisits);
-    const baseQuotations = Math.max(36, quotations);
-    const baseInstallations = Math.max(21, installations);
-    const baseContacted = Math.max(180, contacted);
-    const baseRevenue = Math.max(147000, totalCommission);
+    const calcPercent = (count: number) =>
+      totalLeads > 0 ? Math.round((count / totalLeads) * 100) : 0;
 
     return NextResponse.json({
       success: true,
       stats: {
-        totalLeads: baseLeads,
-        qualifiedLeads: baseQualified,
-        siteVisits: baseSiteVisits,
-        quotations: baseQuotations,
-        installations: baseInstallations,
-        contacted: baseContacted,
-        totalCommission: baseRevenue,
+        totalLeads,
+        newLeads,
+        qualifiedLeads: qualified,
+        siteVisits,
+        quotations,
+        installations,
+        contacted,
+        leadsLast7Days,
+        totalProjectValue,
+        totalInstalledValue,
+        totalCommission,
         funnel: [
-          { stage: "Total Leads", count: baseLeads, percent: 100 },
+          { stage: "Total Leads", count: totalLeads, percent: 100 },
           {
             stage: "Contacted",
-            count: baseContacted,
-            percent: Math.round((baseContacted / baseLeads) * 100)
+            count: contacted,
+            percent: calcPercent(contacted)
           },
           {
             stage: "Qualified",
-            count: baseQualified,
-            percent: Math.round((baseQualified / baseLeads) * 100)
+            count: qualified,
+            percent: calcPercent(qualified)
           },
           {
             stage: "Site Visit",
-            count: baseSiteVisits,
-            percent: Math.round((baseSiteVisits / baseLeads) * 100)
+            count: siteVisits,
+            percent: calcPercent(siteVisits)
           },
           {
             stage: "Quotation",
-            count: baseQuotations,
-            percent: Math.round((baseQuotations / baseLeads) * 100)
+            count: quotations,
+            percent: calcPercent(quotations)
           },
           {
             stage: "Installed",
-            count: baseInstallations,
-            percent: Math.round((baseInstallations / baseLeads) * 100)
+            count: installations,
+            percent: calcPercent(installations)
           }
         ]
       }

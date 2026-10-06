@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Rich Golden Gradient -->
+    <linearGradient id="solarGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="50%" stop-color="#E5A624" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    
+    <!-- Crisp White Container with subtle shadow -->
+    <filter id="cardGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <!-- White Rounded App Icon Background filling the full tab area -->
+  <rect x="16" y="16" width="480" height="480" rx="120" fill="#FFFFFF" filter="url(#cardGlow)" />
+
+  <!-- Outer Solar Emblem / Golden Sun Circle -->
+  <g transform="translate(0, 0)">
+    <!-- Main Golden Disc with White Bottom Arc Mask -->
+    <path 
+      d="M 256,112 
+         A 144,144 0 0,1 396,288 
+         A 130,130 0 0,0 256,368 
+         A 130,130 0 0,0 116,288 
+         A 144,144 0 0,1 256,112 Z" 
+      fill="url(#solarGold)" 
+    />
+
+    <!-- Lower Solar Horizon Arc -->
+    <path 
+      d="M 126,306 
+         A 144,144 0 0,0 386,306 
+         A 144,144 0 0,1 256,400 
+         A 144,144 0 0,1 126,306 Z" 
+      fill="url(#solarGold)" 
+    />
+
+    <!-- Center Powerful Solar Lightning Bolt -->
+    <polygon 
+      points="280,100 216,252 284,252 228,412 332,232 264,232" 
+      fill="#FFFFFF" 
+    />
+    
+    <!-- Sharp Golden Lightning Accents matching original logo -->
+    <polygon 
+      points="276,108 220,250 280,250 232,400 324,236 268,236" 
+      fill="url(#solarGold)" 
+    />
+  </g>
+</svg>

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { Lead } from "@/models/Lead";
-import { Coupon } from "@/models/Coupon";
+import { Dealer } from "@/models/Dealer";
 
 export async function PATCH(
   request: Request,
@@ -11,14 +10,13 @@ export async function PATCH(
     await connectToDatabase();
     const { id } = await params;
     const body = await request.json();
-    const { status, notes, assignedInstaller } = body;
+    const { status, notes } = body;
 
     const updateFields: any = {};
     if (status) updateFields.status = status;
     if (notes !== undefined) updateFields.notes = notes;
-    if (assignedInstaller !== undefined) updateFields.assignedInstaller = assignedInstaller;
 
-    const updated = await Lead.findByIdAndUpdate(
+    const updated = await Dealer.findByIdAndUpdate(
       id,
       { $set: updateFields },
       { new: true }
@@ -26,20 +24,20 @@ export async function PATCH(
 
     if (!updated) {
       return NextResponse.json(
-        { success: false, error: "Lead not found" },
+        { success: false, error: "Dealer application not found" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      lead: {
+      dealer: {
         ...updated,
         id: (updated as any)._id.toString()
       }
     });
   } catch (error) {
-    console.error("PATCH /api/leads/[id] error:", error);
+    console.error("PATCH /api/dealer/[id] error:", error);
     return NextResponse.json(
       { success: false, error: (error as Error).message },
       { status: 500 }
@@ -55,27 +53,20 @@ export async function DELETE(
     await connectToDatabase();
     const { id } = await params;
 
-    const lead = await Lead.findById(id);
-    if (!lead) {
+    const deleted = await Dealer.findByIdAndDelete(id);
+    if (!deleted) {
       return NextResponse.json(
-        { success: false, error: "Lead not found" },
+        { success: false, error: "Dealer not found" },
         { status: 404 }
       );
     }
 
-    // Also delete associated coupon if exists
-    if (lead.couponCode) {
-      await Coupon.deleteMany({ code: lead.couponCode });
-    }
-
-    await Lead.findByIdAndDelete(id);
-
     return NextResponse.json({
       success: true,
-      message: "Lead deleted from database successfully"
+      message: "Dealer inquiry deleted from database successfully"
     });
   } catch (error) {
-    console.error("DELETE /api/leads/[id] error:", error);
+    console.error("DELETE /api/dealer/[id] error:", error);
     return NextResponse.json(
       { success: false, error: (error as Error).message },
       { status: 500 }

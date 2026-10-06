@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Users,
@@ -9,33 +9,30 @@ import {
   Wrench,
   IndianRupee,
   Search,
-  Filter,
   Download,
   Plus,
   MessageSquare,
   Phone,
-  ShieldCheck,
-  TrendingUp,
   Tag,
-  Check,
   X,
   RefreshCw,
   Sun,
   LayoutDashboard,
-  FileSpreadsheet,
-  ChevronRight,
-  Sparkles,
   ArrowLeft,
   Settings,
   Lock,
   Unlock,
   Save,
   KeyRound,
-  Database
+  Database,
+  Trash2,
+  Check,
+  Building2,
+  Sparkles
 } from "lucide-react";
 
 export default function AdminPage() {
-  // Authentication PIN guard (Default: solar2026)
+  // Authentication PIN guard (Default: solar2026 or dynamic PIN from DB)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pinInput, setPinInput] = useState("");
   const [authError, setAuthError] = useState("");
@@ -43,23 +40,29 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<"dashboard" | "dealers" | "coupons" | "settings">("dashboard");
   const [leads, setLeads] = useState<any[]>([]);
   const [dealers, setDealers] = useState<any[]>([]);
-  const [stats, setStats] = useState({
-    totalLeads: 248,
-    qualifiedLeads: 132,
-    siteVisits: 68,
-    installations: 21,
-    totalCommission: 147000,
+  const [stats, setStats] = useState<any>({
+    totalLeads: 0,
+    newLeads: 0,
+    qualifiedLeads: 0,
+    siteVisits: 0,
+    quotations: 0,
+    installations: 0,
+    contacted: 0,
+    leadsLast7Days: 0,
+    totalProjectValue: 0,
+    totalInstalledValue: 0,
+    totalCommission: 0,
     funnel: [
-      { stage: "Total Leads", count: 248, percent: 100 },
-      { stage: "Contacted", count: 180, percent: 73 },
-      { stage: "Qualified", count: 132, percent: 53 },
-      { stage: "Site Visit", count: 68, percent: 27 },
-      { stage: "Quotation", count: 36, percent: 15 },
-      { stage: "Installed", count: 21, percent: 8 }
+      { stage: "Total Leads", count: 0, percent: 100 },
+      { stage: "Contacted", count: 0, percent: 0 },
+      { stage: "Qualified", count: 0, percent: 0 },
+      { stage: "Site Visit", count: 0, percent: 0 },
+      { stage: "Quotation", count: 0, percent: 0 },
+      { stage: "Installed", count: 0, percent: 0 }
     ]
   });
 
-  // Dynamic Site Settings state from MongoDB
+  // Dynamic Site Settings state from MongoDB Atlas
   const [siteSettings, setSiteSettings] = useState({
     brandName: "BigIdeaSolar",
     phone: "+91 90449 14653",
@@ -82,6 +85,7 @@ export default function AdminPage() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [areaFilter, setAreaFilter] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Coupon verifier state
   const [couponInput, setCouponInput] = useState("");
@@ -108,8 +112,37 @@ export default function AdminPage() {
     systemSize: "3 kW",
     monthlyBill: "₹2,000 - ₹3,000",
     preferredBrand: "Tata Power Solar",
-    source: "Direct"
+    source: "Direct CRM"
   });
+
+  const fetchDashboardData = useCallback(async (showRefreshIndicator = false) => {
+    if (showRefreshIndicator) setIsRefreshing(true);
+    else setIsLoading(true);
+
+    try {
+      const [leadsRes, statsRes, dealersRes, configRes] = await Promise.all([
+        fetch("/api/leads"),
+        fetch("/api/stats"),
+        fetch("/api/dealer"),
+        fetch("/api/config")
+      ]);
+
+      const leadsData = await leadsRes.json();
+      const statsData = await statsRes.json();
+      const dealersData = await dealersRes.json();
+      const configData = await configRes.json();
+
+      if (leadsData.success && leadsData.leads) setLeads(leadsData.leads);
+      if (statsData.success && statsData.stats) setStats(statsData.stats);
+      if (dealersData.success && dealersData.dealers) setDealers(dealersData.dealers);
+      if (configData.success && configData.config) setSiteSettings(configData.config);
+    } catch (err) {
+      console.error("Error fetching live database data:", err);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Check if session PIN is saved in sessionStorage
@@ -118,7 +151,7 @@ export default function AdminPage() {
       setIsAuthenticated(true);
       fetchDashboardData();
     }
-  }, []);
+  }, [fetchDashboardData]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,33 +171,7 @@ export default function AdminPage() {
     sessionStorage.removeItem("solar_admin_auth");
   };
 
-  const fetchDashboardData = async () => {
-    setIsLoading(true);
-    try {
-      const [leadsRes, statsRes, dealersRes, configRes] = await Promise.all([
-        fetch("/api/leads"),
-        fetch("/api/stats"),
-        fetch("/api/dealer"),
-        fetch("/api/config")
-      ]);
-
-      const leadsData = await leadsRes.json();
-      const statsData = await statsRes.json();
-      const dealersData = await dealersRes.json();
-      const configData = await configRes.json();
-
-      if (leadsData.success && leadsData.leads) setLeads(leadsData.leads);
-      if (statsData.success && statsData.stats) setStats(statsData.stats);
-      if (dealersData.success && dealersData.dealers) setDealers(dealersData.dealers);
-      if (configData.success && configData.config) setSiteSettings(configData.config);
-    } catch (err) {
-      console.error("Error fetching admin data:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleUpdateStatus = async (id: string, newStatus: string) => {
+  const handleUpdateLeadStatus = async (id: string, newStatus: string) => {
     try {
       const res = await fetch(`/api/leads/${id}`, {
         method: "PATCH",
@@ -174,11 +181,64 @@ export default function AdminPage() {
       const data = await res.json();
       if (data.success) {
         setLeads((prev) =>
-          prev.map((l) => (l.id === id ? { ...l, status: newStatus } : l))
+          prev.map((l) => (l.id === id || l._id === id ? { ...l, status: newStatus } : l))
         );
+        // Refresh live stats from database
+        fetchDashboardData(true);
       }
     } catch (err) {
       console.error("Update lead status error:", err);
+    }
+  };
+
+  const handleDeleteLead = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to delete lead "${name}" from MongoDB database?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/leads/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        setLeads((prev) => prev.filter((l) => (l.id !== id && l._id !== id)));
+        fetchDashboardData(true);
+      }
+    } catch (err) {
+      console.error("Delete lead error:", err);
+    }
+  };
+
+  const handleUpdateDealerStatus = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/dealer/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setDealers((prev) =>
+          prev.map((d) => (d.id === id || d._id === id ? { ...d, status: newStatus } : d))
+        );
+      }
+    } catch (err) {
+      console.error("Update dealer status error:", err);
+    }
+  };
+
+  const handleDeleteDealer = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to delete dealer "${name}" from MongoDB database?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/dealer/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        setDealers((prev) => prev.filter((d) => (d.id !== id && d._id !== id)));
+      }
+    } catch (err) {
+      console.error("Delete dealer error:", err);
     }
   };
 
@@ -227,9 +287,9 @@ export default function AdminPage() {
           systemSize: "3 kW",
           monthlyBill: "₹2,000 - ₹3,000",
           preferredBrand: "Tata Power Solar",
-          source: "Direct"
+          source: "Direct CRM"
         });
-        fetchDashboardData();
+        fetchDashboardData(true);
       }
     } catch (err) {
       console.error("Add manual lead error:", err);
@@ -289,6 +349,9 @@ export default function AdminPage() {
     return matchesSearch && matchesStatus && matchesArea;
   });
 
+  // Unique areas from live leads for the filter dropdown
+  const uniqueLeadAreas = Array.from(new Set(leads.map((l) => l.area).filter(Boolean)));
+
   // ========================================================
   // PIN AUTHENTICATION LOCK SCREEN
   // ========================================================
@@ -302,7 +365,7 @@ export default function AdminPage() {
             </div>
             <h1 className="text-2xl font-black tracking-tight">Admin & CRM Access</h1>
             <p className="text-xs text-slate-400">
-              Secure Channel Portal • Connected to MongoDB Atlas
+              BigIdeaSolar Portal • Connected to MongoDB Atlas
             </p>
           </div>
 
@@ -330,7 +393,7 @@ export default function AdminPage() {
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm rounded-xl shadow-lg shadow-emerald-500/30 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm rounded-xl shadow-lg shadow-emerald-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Unlock className="w-4 h-4" />
               <span>Unlock Admin CRM</span>
@@ -360,7 +423,7 @@ export default function AdminPage() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
+            {/* Logo & Database Badge */}
             <div className="flex items-center gap-3">
               <Link href="/" className="flex items-center gap-2 group">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white shadow-md">
@@ -370,34 +433,39 @@ export default function AdminPage() {
                   <span className="font-black text-slate-900 text-base">
                     BigIdea<span className="text-emerald-600">Solar</span>
                   </span>
-                  <span className="ml-2 text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 flex-inline items-center gap-1">
-                    <Database className="w-2.5 h-2.5 inline mr-1" /> MongoDB Atlas
+                  <span className="ml-2 text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 inline-flex items-center gap-1">
+                    <Database className="w-2.5 h-2.5 inline" /> MongoDB Atlas Live
                   </span>
                 </div>
               </Link>
             </div>
 
-            {/* Date Range & Profile */}
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
-                <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                <span>Active 30-Day CRM Pipeline</span>
-              </div>
+            {/* Live Refresh & Lock */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => fetchDashboardData(true)}
+                disabled={isRefreshing}
+                className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-emerald-700 bg-slate-100 hover:bg-emerald-50 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors"
+                title="Refresh Live Data from Database"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-emerald-600" : "text-slate-500"}`} />
+                <span className="hidden sm:inline">{isRefreshing ? "Syncing..." : "Sync DB"}</span>
+              </button>
 
               {/* Admin Avatar */}
-              <div className="flex items-center gap-2.5 pl-3 border-l border-slate-200">
+              <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200">
                 <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
                   RY
                 </div>
                 <div className="hidden sm:block text-left">
                   <p className="text-xs font-bold text-slate-800 leading-none">Rahul Yadav</p>
-                  <p className="text-[10px] text-emerald-600 font-semibold">Channel Admin</p>
+                  <p className="text-[10px] text-emerald-600 font-semibold">{siteSettings.phone}</p>
                 </div>
               </div>
 
               <button
                 onClick={handleLogout}
-                className="text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors"
+                className="text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                 title="Lock and Log Out"
               >
                 Lock CRM
@@ -411,7 +479,7 @@ export default function AdminPage() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Navigation Tabs */}
         <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
             {[
               { id: "dashboard", label: `Leads (${leads.length})`, icon: LayoutDashboard },
               { id: "dealers", label: `Dealer Inquiries (${dealers.length})`, icon: Users },
@@ -424,7 +492,7 @@ export default function AdminPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                     isActive
                       ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
                       : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200"
@@ -440,7 +508,7 @@ export default function AdminPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={exportLeadsToCSV}
-              className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-xl transition-colors shadow-xs"
+              className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-xl transition-colors shadow-xs cursor-pointer"
             >
               <Download className="w-3.5 h-3.5 text-slate-500" />
               <span>Export CSV</span>
@@ -448,7 +516,7 @@ export default function AdminPage() {
 
             <button
               onClick={() => setShowAddLeadModal(true)}
-              className="flex items-center gap-1.5 text-xs font-extrabold text-white bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20"
+              className="flex items-center gap-1.5 text-xs font-extrabold text-white bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl transition-all shadow-md shadow-emerald-600/20 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>+ Add Lead</span>
@@ -457,7 +525,7 @@ export default function AdminPage() {
         </div>
 
         {/* ======================================================== */}
-        {/* 5 KPI Metric Cards (From Mockup Bottom CRM Panel) */}
+        {/* 5 KPI Metric Cards (Connected to Live MongoDB Database) */}
         {/* ======================================================== */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {/* Card 1: Total Leads */}
@@ -469,9 +537,11 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="mt-2">
-              <p className="text-2xl font-black text-slate-900">{stats.totalLeads}</p>
+              <p className="text-2xl font-black text-slate-900">
+                {isLoading ? "..." : stats.totalLeads}
+              </p>
               <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 mt-0.5">
-                ↑ 12% from last 7 days
+                {stats.leadsLast7Days || 0} in last 7 days
               </span>
             </div>
           </div>
@@ -485,9 +555,11 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="mt-2">
-              <p className="text-2xl font-black text-slate-900">{stats.qualifiedLeads}</p>
+              <p className="text-2xl font-black text-slate-900">
+                {isLoading ? "..." : stats.qualifiedLeads}
+              </p>
               <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 mt-0.5">
-                ↑ 18% from last 7 days
+                {stats.totalLeads > 0 ? Math.round((stats.qualifiedLeads / stats.totalLeads) * 100) : 0}% Qualification Rate
               </span>
             </div>
           </div>
@@ -501,9 +573,11 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="mt-2">
-              <p className="text-2xl font-black text-slate-900">{stats.siteVisits}</p>
-              <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 mt-0.5">
-                ↑ 24% from last 7 days
+              <p className="text-2xl font-black text-slate-900">
+                {isLoading ? "..." : stats.siteVisits}
+              </p>
+              <span className="text-[11px] font-bold text-amber-600 flex items-center gap-1 mt-0.5">
+                {stats.totalLeads > 0 ? Math.round((stats.siteVisits / stats.totalLeads) * 100) : 0}% Conversion to Survey
               </span>
             </div>
           </div>
@@ -517,27 +591,29 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="mt-2">
-              <p className="text-2xl font-black text-slate-900">{stats.installations}</p>
-              <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 mt-0.5">
-                ↑ 32% from last 7 days
+              <p className="text-2xl font-black text-slate-900">
+                {isLoading ? "..." : stats.installations}
+              </p>
+              <span className="text-[11px] font-bold text-purple-600 flex items-center gap-1 mt-0.5">
+                {stats.installations} Completed Installs
               </span>
             </div>
           </div>
 
-          {/* Card 5: Total Commission */}
+          {/* Card 5: Total Pipeline Value / Commission */}
           <div className="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-4.5 border border-emerald-600 shadow-md flex flex-col justify-between col-span-2 sm:col-span-1">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-emerald-100 uppercase">Total Revenue</span>
+              <span className="text-xs font-bold text-emerald-100 uppercase">Pipeline Value</span>
               <div className="w-8 h-8 rounded-lg bg-white/20 text-white flex items-center justify-center">
                 <IndianRupee className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-2">
               <p className="text-2xl font-black text-white">
-                ₹{stats.totalCommission.toLocaleString("en-IN")}
+                ₹{(stats.totalProjectValue || stats.totalCommission || 0).toLocaleString("en-IN")}
               </p>
               <span className="text-[11px] font-bold text-amber-300 flex items-center gap-1 mt-0.5">
-                ↑ 28% from last 7 days
+                Live MongoDB Calculation
               </span>
             </div>
           </div>
@@ -548,15 +624,15 @@ export default function AdminPage() {
         {/* ======================================================== */}
         {activeTab === "dashboard" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left: Lead Funnel Chart (Matches Mockup Funnel) */}
+            {/* Left: Lead Funnel Chart (Matches Live DB Metrics) */}
             <div className="lg:col-span-4 bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-extrabold text-slate-900 text-sm">Lead Funnel</h3>
-                <span className="text-xs font-bold text-emerald-600">30-Day Conversion</span>
+                <h3 className="font-extrabold text-slate-900 text-sm">Live Lead Funnel</h3>
+                <span className="text-xs font-bold text-emerald-600">Database Aggregation</span>
               </div>
 
               <div className="space-y-3 pt-1">
-                {stats.funnel.map((item, idx) => {
+                {stats.funnel.map((item: any, idx: number) => {
                   const colors = [
                     "bg-blue-600",
                     "bg-teal-500",
@@ -585,11 +661,11 @@ export default function AdminPage() {
                 })}
               </div>
 
-              {/* Coupon Verification Mini Box (Right Panel in Mockup) */}
+              {/* Coupon Verification Mini Box */}
               <div className="pt-4 border-t border-slate-200">
                 <h4 className="font-extrabold text-xs text-slate-800 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                   <Tag className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Coupon Verification</span>
+                  <span>Quick Coupon Verification</span>
                 </h4>
 
                 <form onSubmit={handleVerifyCoupon} className="flex gap-2">
@@ -603,7 +679,7 @@ export default function AdminPage() {
                   <button
                     type="submit"
                     disabled={isVerifyingCoupon}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs"
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer"
                   >
                     {isVerifyingCoupon ? "..." : "Verify"}
                   </button>
@@ -635,12 +711,12 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Right: Recent Leads Table (Matches Mockup Table) */}
+            {/* Right: Recent Leads Table (Pure Real Data from MongoDB) */}
             <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
               {/* Filter / Search Bar */}
               <div className="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
                 <h3 className="font-extrabold text-slate-900 text-base">
-                  Recent Leads ({filteredLeads.length})
+                  Live Leads ({filteredLeads.length})
                 </h3>
 
                 <div className="flex items-center gap-2.5 flex-1 max-w-md">
@@ -650,7 +726,7 @@ export default function AdminPage() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search lead name, phone, area..."
+                      placeholder="Search name, phone, coupon..."
                       className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-emerald-500"
                     />
                   </div>
@@ -658,7 +734,7 @@ export default function AdminPage() {
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none font-bold text-slate-700"
+                    className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none font-bold text-slate-700 cursor-pointer"
                   >
                     <option value="All">All Statuses</option>
                     <option value="New">New</option>
@@ -668,104 +744,136 @@ export default function AdminPage() {
                     <option value="Quotation">Quotation</option>
                     <option value="Installed">Installed</option>
                   </select>
+
+                  {uniqueLeadAreas.length > 0 && (
+                    <select
+                      value={areaFilter}
+                      onChange={(e) => setAreaFilter(e.target.value)}
+                      className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none font-bold text-slate-700 cursor-pointer hidden sm:block"
+                    >
+                      <option value="All">All Localities</option>
+                      {uniqueLeadAreas.map((area: any) => (
+                        <option key={area} value={area}>{area}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
 
               {/* Table */}
               <div className="overflow-x-auto flex-1">
-                <table className="w-full text-left text-xs text-slate-600">
-                  <thead className="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 text-[11px] uppercase">
-                    <tr>
-                      <th className="py-3 px-4">Name</th>
-                      <th className="py-3 px-3">Phone</th>
-                      <th className="py-3 px-3">Area</th>
-                      <th className="py-3 px-2">Size</th>
-                      <th className="py-3 px-3">Status</th>
-                      <th className="py-3 px-3">Source</th>
-                      <th className="py-3 px-3 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {filteredLeads.map((lead) => {
-                      const statusStyles: Record<string, string> = {
-                        New: "bg-blue-50 text-blue-700 border-blue-200",
-                        Contacted: "bg-amber-50 text-amber-700 border-amber-200",
-                        Qualified: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                        "Site Visit": "bg-teal-50 text-teal-700 border-teal-200",
-                        Quotation: "bg-indigo-50 text-indigo-700 border-indigo-200",
-                        Installed: "bg-purple-50 text-purple-700 border-purple-200",
-                        Rejected: "bg-rose-50 text-rose-700 border-rose-200"
-                      };
+                {isLoading ? (
+                  <div className="py-12 text-center text-slate-400 text-xs font-semibold">
+                    <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-600" />
+                    Loading real-time records from MongoDB Atlas...
+                  </div>
+                ) : filteredLeads.length === 0 ? (
+                  <div className="py-12 text-center text-slate-400 text-xs font-semibold">
+                    No leads found matching your search or filters.
+                  </div>
+                ) : (
+                  <table className="w-full text-left text-xs text-slate-600">
+                    <thead className="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 text-[11px] uppercase">
+                      <tr>
+                        <th className="py-3 px-4">Name</th>
+                        <th className="py-3 px-3">Phone</th>
+                        <th className="py-3 px-3">Area</th>
+                        <th className="py-3 px-2">Size</th>
+                        <th className="py-3 px-3">Status</th>
+                        <th className="py-3 px-3">Source</th>
+                        <th className="py-3 px-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {filteredLeads.map((lead) => {
+                        const leadId = lead.id || lead._id;
+                        const statusStyles: Record<string, string> = {
+                          New: "bg-blue-50 text-blue-700 border-blue-200",
+                          Contacted: "bg-amber-50 text-amber-700 border-amber-200",
+                          Qualified: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                          "Site Visit": "bg-teal-50 text-teal-700 border-teal-200",
+                          Quotation: "bg-indigo-50 text-indigo-700 border-indigo-200",
+                          Installed: "bg-purple-50 text-purple-700 border-purple-200",
+                          Rejected: "bg-rose-50 text-rose-700 border-rose-200"
+                        };
 
-                      return (
-                        <tr key={lead.id || lead._id} className="hover:bg-slate-50/80 transition-colors">
-                          <td className="py-3 px-4 font-bold text-slate-900">
-                            <div>{lead.name}</div>
-                            <span className="text-[10px] font-mono text-emerald-700">
-                              {lead.couponCode}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 font-mono font-medium">{lead.phone}</td>
-                          <td className="py-3 px-3">{lead.area}</td>
-                          <td className="py-3 px-2 font-bold text-slate-800">{lead.systemSize}</td>
-                          <td className="py-3 px-3">
-                            <select
-                              value={lead.status}
-                              onChange={(e) =>
-                                handleUpdateStatus(lead.id || lead._id, e.target.value)
-                              }
-                              className={`text-[11px] font-bold px-2 py-0.5 rounded-full border outline-none cursor-pointer ${
-                                statusStyles[lead.status] || "bg-slate-50 text-slate-700"
-                              }`}
-                            >
-                              <option value="New">New</option>
-                              <option value="Contacted">Contacted</option>
-                              <option value="Qualified">Qualified</option>
-                              <option value="Site Visit">Site Visit</option>
-                              <option value="Quotation">Quotation</option>
-                              <option value="Installed">Installed</option>
-                              <option value="Rejected">Rejected</option>
-                            </select>
-                          </td>
-                          <td className="py-3 px-3">
-                            <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-                              {lead.source}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
-                              <a
-                                href={`https://wa.me/91${lead.phone}?text=${encodeURIComponent(
-                                  `Hello ${lead.name}, greetings from BigIdeaSolar! Regarding your inquiry for ${lead.systemSize} solar in ${lead.area} (Coupon: ${lead.couponCode}).`
-                                )}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="p-1.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 transition-colors"
-                                title="Chat on WhatsApp"
+                        return (
+                          <tr key={leadId} className="hover:bg-slate-50/80 transition-colors">
+                            <td className="py-3 px-4 font-bold text-slate-900">
+                              <div>{lead.name}</div>
+                              {lead.couponCode && (
+                                <span className="text-[10px] font-mono text-emerald-700">
+                                  {lead.couponCode}
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3 px-3 font-mono font-medium">{lead.phone}</td>
+                            <td className="py-3 px-3">{lead.area}</td>
+                            <td className="py-3 px-2 font-bold text-slate-800">{lead.systemSize}</td>
+                            <td className="py-3 px-3">
+                              <select
+                                value={lead.status}
+                                onChange={(e) => handleUpdateLeadStatus(leadId, e.target.value)}
+                                className={`text-[11px] font-bold px-2 py-0.5 rounded-full border outline-none cursor-pointer ${
+                                  statusStyles[lead.status] || "bg-slate-50 text-slate-700"
+                                }`}
                               >
-                                <MessageSquare className="w-3.5 h-3.5" />
-                              </a>
-                              <a
-                                href={`tel:${lead.phone}`}
-                                className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
-                                title="Call Lead"
-                              >
-                                <Phone className="w-3.5 h-3.5" />
-                              </a>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                                <option value="New">New</option>
+                                <option value="Contacted">Contacted</option>
+                                <option value="Qualified">Qualified</option>
+                                <option value="Site Visit">Site Visit</option>
+                                <option value="Quotation">Quotation</option>
+                                <option value="Installed">Installed</option>
+                                <option value="Rejected">Rejected</option>
+                              </select>
+                            </td>
+                            <td className="py-3 px-3">
+                              <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                                {lead.source || "Website"}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <a
+                                  href={`https://wa.me/91${lead.phone}?text=${encodeURIComponent(
+                                    `Hello ${lead.name}, greetings from BigIdeaSolar! Regarding your inquiry for ${lead.systemSize} solar in ${lead.area} (Coupon: ${lead.couponCode}).`
+                                  )}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="p-1.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-700 transition-colors"
+                                  title="Chat on WhatsApp"
+                                >
+                                  <MessageSquare className="w-3.5 h-3.5" />
+                                </a>
+                                <a
+                                  href={`tel:${lead.phone}`}
+                                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                                  title="Call Lead"
+                                >
+                                  <Phone className="w-3.5 h-3.5" />
+                                </a>
+                                <button
+                                  onClick={() => handleDeleteLead(leadId, lead.name)}
+                                  className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 transition-colors cursor-pointer"
+                                  title="Delete Lead from Database"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </div>
           </div>
         )}
 
         {/* ======================================================== */}
-        {/* DEALER INQUIRIES VIEW */}
+        {/* DEALER INQUIRIES VIEW (Pure Real Data from MongoDB) */}
         {/* ======================================================== */}
         {activeTab === "dealers" && (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden p-6 space-y-4">
@@ -775,7 +883,7 @@ export default function AdminPage() {
                   Solar Dealer & Franchisee Applications ({dealers.length})
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Prospective channel partners wanting to sell and install solar in UP.
+                  Prospective channel partners and installers registered in MongoDB Atlas.
                 </p>
               </div>
               <span className="text-xs font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">
@@ -783,72 +891,96 @@ export default function AdminPage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              {dealers.map((dealer) => (
-                <div
-                  key={dealer.id || dealer._id}
-                  className="rounded-2xl border border-slate-200 p-5 bg-slate-50/50 space-y-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-extrabold text-base text-slate-900">
-                        {dealer.name}
-                      </h4>
-                      <p className="text-xs font-semibold text-emerald-700">
-                        {dealer.companyName}
-                      </p>
-                    </div>
-                    <span className="text-[10px] font-bold bg-slate-200 text-slate-800 px-2 py-0.5 rounded">
-                      {dealer.status}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
-                    <div>
-                      <span className="font-bold text-slate-500 block">City:</span>
-                      <span>{dealer.city}</span>
-                    </div>
-                    <div>
-                      <span className="font-bold text-slate-500 block">Experience:</span>
-                      <span>{dealer.experience}</span>
-                    </div>
-                    <div>
-                      <span className="font-bold text-slate-500 block">Volume:</span>
-                      <span>{dealer.expectedVolume}</span>
-                    </div>
-                    <div>
-                      <span className="font-bold text-slate-500 block">Phone:</span>
-                      <span className="font-mono">{dealer.phone}</span>
-                    </div>
-                  </div>
-
-                  <div className="pt-2 flex items-center gap-2">
-                    <a
-                      href={`https://wa.me/91${dealer.phone}?text=${encodeURIComponent(
-                        `Hello ${dealer.name}, this is BigIdeaSolar Channel Partner Management. We reviewed your dealer registration for ${dealer.city}.`
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+            {dealers.length === 0 ? (
+              <div className="py-12 text-center text-slate-400 text-xs font-semibold">
+                No dealer partner applications found in database.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                {dealers.map((dealer) => {
+                  const dealerId = dealer.id || dealer._id;
+                  return (
+                    <div
+                      key={dealerId}
+                      className="rounded-2xl border border-slate-200 p-5 bg-slate-50/50 space-y-3"
                     >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      <span>WhatsApp Partner</span>
-                    </a>
-                    <a
-                      href={`tel:${dealer.phone}`}
-                      className="p-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition-colors"
-                    >
-                      <Phone className="w-4 h-4" />
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-extrabold text-base text-slate-900">
+                            {dealer.name}
+                          </h4>
+                          <p className="text-xs font-semibold text-emerald-700">
+                            {dealer.companyName}
+                          </p>
+                        </div>
+                        <select
+                          value={dealer.status || "Pending"}
+                          onChange={(e) => handleUpdateDealerStatus(dealerId, e.target.value)}
+                          className="text-[11px] font-bold bg-white border border-slate-200 text-slate-800 px-2 py-1 rounded-lg outline-none cursor-pointer"
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Reviewed">Reviewed</option>
+                          <option value="Approved">Approved</option>
+                          <option value="Contacted">Contacted</option>
+                          <option value="Rejected">Rejected</option>
+                        </select>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-2 border-t border-slate-200">
+                        <div>
+                          <span className="font-bold text-slate-500 block">City:</span>
+                          <span>{dealer.city}</span>
+                        </div>
+                        <div>
+                          <span className="font-bold text-slate-500 block">Experience:</span>
+                          <span>{dealer.experience}</span>
+                        </div>
+                        <div>
+                          <span className="font-bold text-slate-500 block">Expected Volume:</span>
+                          <span>{dealer.expectedVolume}</span>
+                        </div>
+                        <div>
+                          <span className="font-bold text-slate-500 block">Phone:</span>
+                          <span className="font-mono">{dealer.phone}</span>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 flex items-center gap-2">
+                        <a
+                          href={`https://wa.me/91${dealer.phone}?text=${encodeURIComponent(
+                            `Hello ${dealer.name}, this is BigIdeaSolar Channel Partner Management. We reviewed your dealer registration for ${dealer.city}.`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                          <span>WhatsApp Partner</span>
+                        </a>
+                        <a
+                          href={`tel:${dealer.phone}`}
+                          className="p-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs transition-colors"
+                        >
+                          <Phone className="w-4 h-4" />
+                        </a>
+                        <button
+                          onClick={() => handleDeleteDealer(dealerId, dealer.name)}
+                          className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs transition-colors cursor-pointer"
+                          title="Delete Dealer Application"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
         {/* ======================================================== */}
-        {/* COUPON VERIFIER TAB VIEW */}
+        {/* COUPON VERIFIER TAB VIEW (Real MongoDB Verification) */}
         {/* ======================================================== */}
         {activeTab === "coupons" && (
           <div className="max-w-2xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8 space-y-6">
@@ -877,9 +1009,9 @@ export default function AdminPage() {
               <button
                 type="submit"
                 disabled={isVerifyingCoupon}
-                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-md transition-all"
+                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-md transition-all cursor-pointer"
               >
-                {isVerifyingCoupon ? "Verifying..." : "Verify & Mark Redeemed"}
+                {isVerifyingCoupon ? "Verifying in Database..." : "Verify & Mark Redeemed"}
               </button>
             </form>
 
@@ -1033,6 +1165,25 @@ export default function AdminPage() {
                 </div>
               </div>
 
+              {/* Office Address */}
+              <div className="space-y-3 pt-3 border-t border-slate-100">
+                <h4 className="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-emerald-600" />
+                  <span>Office Address & Location</span>
+                </h4>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700">Physical Office Address</label>
+                  <input
+                    type="text"
+                    value={siteSettings.address}
+                    onChange={(e) =>
+                      setSiteSettings({ ...siteSettings, address: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 outline-none focus:border-emerald-600"
+                  />
+                </div>
+              </div>
+
               {/* Security & Admin PIN */}
               <div className="space-y-3 pt-3 border-t border-slate-100">
                 <h4 className="text-sm font-extrabold text-slate-800 flex items-center gap-2">
@@ -1057,10 +1208,10 @@ export default function AdminPage() {
                 <button
                   type="submit"
                   disabled={isSavingSettings}
-                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2"
+                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{isSavingSettings ? "Saving..." : "Save Settings to MongoDB"}</span>
+                  <span>{isSavingSettings ? "Saving to MongoDB..." : "Save Settings to MongoDB"}</span>
                 </button>
               </div>
             </form>
@@ -1076,7 +1227,7 @@ export default function AdminPage() {
               <h3 className="font-black text-slate-900 text-lg">Add Offline / Inbound Lead</h3>
               <button
                 onClick={() => setShowAddLeadModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1124,7 +1275,7 @@ export default function AdminPage() {
                   <select
                     value={newLeadForm.systemSize}
                     onChange={(e) => setNewLeadForm({ ...newLeadForm, systemSize: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-emerald-500"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-emerald-500 cursor-pointer"
                   >
                     <option value="2 kW">2 kW</option>
                     <option value="3 kW">3 kW</option>
@@ -1138,13 +1289,13 @@ export default function AdminPage() {
                 <button
                   type="button"
                   onClick={() => setShowAddLeadModal(false)}
-                  className="px-4 py-2 rounded-xl text-slate-600 font-bold hover:bg-slate-100"
+                  className="px-4 py-2 rounded-xl text-slate-600 font-bold hover:bg-slate-100 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-600/20"
+                  className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-600/20 cursor-pointer"
                 >
                   Save Lead to MongoDB
                 </button>

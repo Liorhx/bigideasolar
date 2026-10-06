@@ -12,12 +12,69 @@ export interface Translations {
     areas: string;
     dealerProgram: string;
     faq: string;
+    process: string;
     callNow: string;
     getQuote: string;
     quoteShort: string;
     langShort: string;
     langLong: string;
     switchPrompt: string;
+  };
+  processSection: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    cashTabTitle: string;
+    cashTabBadge: string;
+    cashTimeline: string;
+    cashStep1Title: string;
+    cashStep1Desc: string;
+    cashStep2Title: string;
+    cashStep2Desc: string;
+    cashStep3Title: string;
+    cashStep3Desc: string;
+    loanTabTitle: string;
+    loanTabBadge: string;
+    loanTimeline: string;
+    loanIntro: string;
+    step1Title: string;
+    step1Sub: string;
+    step1Desc: string;
+    docsRequiredTitle: string;
+    doc1: string;
+    doc2: string;
+    doc3: string;
+    doc4: string;
+    step1Assistance: string;
+    step2Title: string;
+    step2Sub: string;
+    step2Desc: string;
+    step3Title: string;
+    step3Sub: string;
+    step3Desc: string;
+    step4Title: string;
+    step4Sub: string;
+    step4Desc: string;
+    step5Title: string;
+    step5Sub: string;
+    step5Desc: string;
+    financeGraphicTitle: string;
+    financeGraphicDesc: string;
+    prevBillLabel: string;
+    newBillLabel: string;
+    subsidySlashLabel: string;
+    monthlyEmiLabel: string;
+    netBenefitLabel: string;
+    zeroBurdenNote: string;
+    ctaTitle: string;
+    ctaButton: string;
+    callExpertButton: string;
+  };
+  trustBanner: {
+    upneda: string;
+    uppcl: string;
+    dbt: string;
+    homes: string;
   };
   hero: {
     badge: string;
@@ -164,6 +221,7 @@ export const translations: Record<Language, Translations> = {
       areas: "Service Areas",
       dealerProgram: "Become a Partner",
       faq: "Questions & Answers",
+      process: "How It Works (Loan & Cash)",
       callNow: "Call Solar Expert",
       getQuote: "Calculate Budget",
       quoteShort: "Guide",
@@ -171,27 +229,83 @@ export const translations: Record<Language, Translations> = {
       langLong: "🇮🇳 हिंदी में पढ़ें",
       switchPrompt: "हिंदी में पढ़ने के लिए यहाँ क्लिक करें 👉"
     },
+    processSection: {
+      badge: "⚡ Complete Solar Installation & Subsidy Roadmap",
+      title: "How Solar Installation Works in Lucknow",
+      subtitle: "Choose between 48-Hour Instant Cash Installation or Easy Bank Loan + ₹78,000 Govt Subsidy where electricity bill savings pay your EMI!",
+      cashTabTitle: "⚡ Option 1: Fast-Track Cash Payment",
+      cashTabBadge: "Ready in 2–3 Days",
+      cashTimeline: "Total Time: Just 2 to 3 Days",
+      cashStep1Title: "1. Call Us & Decide System Size",
+      cashStep1Desc: "Call our Lucknow helpline or calculate online. Our solar engineer surveys your rooftop for free and finalizes the kW capacity.",
+      cashStep2Title: "2. Choose Top Brand (Tata / Waaree / Adani)",
+      cashStep2Desc: "Pick your preferred Tier-1 brand panels & inverter suited to your budget and power load.",
+      cashStep3Title: "3. Rapid Installation in 48-72 Hours",
+      cashStep3Desc: "Certified engineers complete full panel installation, structure mounting, and wiring in 2-3 days. Start saving on electricity immediately!",
+      loanTabTitle: "🏦 Option 2: Easy Bank Loan + ₹78,000 Subsidy (Most Popular)",
+      loanTabBadge: "Zero Out-of-Pocket Burden • 1 to 1.5 Months",
+      loanTimeline: "Total Timeline: ~1 to 1.5 Months (100% BigIdeaSolar Handholding)",
+      loanIntro: "No need to spend lump-sum cash! We personally guide you to the bank, get your solar loan sanctioned, and secure your ₹78,000 PM Surya Ghar subsidy.",
+      step1Title: "Step 1: Document Collection & Bank Visit Assistance",
+      step1Sub: "Only 4 simple documents needed • We accompany you to the bank",
+      step1Desc: "Our BigIdeaSolar team personally helps you fill and submit the solar loan application at leading partner banks (SBI, PNB, Canara Bank, Bank of Baroda).",
+      docsRequiredTitle: "📋 Only 4 Documents Required:",
+      doc1: "Aadhar Card (आधार कार्ड)",
+      doc2: "Bank Passbook / Cancelled Cheque (बैंक पासबुक)",
+      doc3: "House Registry / Property Ownership Papers (मकान की रजिस्ट्री)",
+      doc4: "Latest Electricity Bill (नवीनतम बिजली का बिल)",
+      step1Assistance: "✨ No running between bank counters — our executives assist you in person from start to finish!",
+      step2Title: "Step 2: Bank Loan Approval & Account Credit",
+      step2Sub: "Sanctioned within 1 to 2 weeks",
+      step2Desc: "The bank reviews your documents and sanctions the low-interest solar loan. The sanctioned amount is credited directly into your bank account.",
+      step3Title: "Step 3: Rapid Rooftop Installation & PM Portal Photo",
+      step3Sub: "Solar panels mounted & geotagged verification",
+      step3Desc: "Using the credited funds, our certified technicians install high-efficiency solar panels on your roof. Once installed, an official verified photo of the homeowner with the installed rooftop solar system is taken for PM Surya Ghar portal submission.",
+      step4Title: "Step 4: Up to ₹78,000 Govt Subsidy Credited in Your Bank",
+      step4Sub: "Direct DBT subsidy received in 1 to 2 months",
+      step4Desc: "BigIdeaSolar submits your verified photo and DISCOM inspection report on the National Portal. The Government of India credits up to ₹78,000 subsidy directly into your bank account (in installments / within 1-2 months).",
+      step5Title: "Step 5: Deposit Subsidy to Slash Loan + Saved Bills Pay Remaining EMI!",
+      step5Sub: "Solar literally pays for itself with ₹0 burden on your family income",
+      step5Desc: "Deposit your ₹78,000 subsidy into the bank loan account to drastically slash the principal loan balance. Then, use the ₹3,000 to ₹5,000 you save every month on electricity bills to easily pay the small remaining monthly EMI! Once the loan is cleared, enjoy 20+ years of 100% FREE electricity!",
+      financeGraphicTitle: "💡 Real Financial Example: How Solar Pays For Itself Every Month",
+      financeGraphicDesc: "Why 90%+ families in Lucknow choose the Bank Loan + Subsidy path:",
+      prevBillLabel: "Old Monthly Electricity Bill (Before Solar):",
+      newBillLabel: "New Monthly Electricity Bill (With Solar):",
+      subsidySlashLabel: "PM Surya Ghar Govt Subsidy (Direct to Bank):",
+      monthlyEmiLabel: "Small Monthly Loan EMI (After Subsidy Slash):",
+      netBenefitLabel: "Net Cash in Hand Saved Every Month from Day 1:",
+      zeroBurdenNote: "🛡️ 100% Zero Pocket Burden: The money you were already paying to the electricity board now pays off your solar asset. Once paid, you get 20+ years of free power!",
+      ctaTitle: "Want Zero-Hassle Solar with Bank Loan & Subsidy Assistance?",
+      ctaButton: "Apply for Solar Loan & Free Survey →",
+      callExpertButton: "Speak with Loan Specialist"
+    },
+    trustBanner: {
+      upneda: "🏛️ UPNEDA Registered Channel Partner",
+      uppcl: "⚡ 100% UPPCL (MVVNL) Net-Metering Approved",
+      dbt: "💰 ₹78,000 Direct DBT Bank Subsidy",
+      homes: "🏠 500+ Lucknow Homes Powered"
+    },
     hero: {
-      badge: "🏛️ PM Surya Ghar Yojana Govt Subsidy Available",
+      badge: "🏛️ PM Surya Ghar Muft Bijli Yojana • ₹78,000 Direct DBT Subsidy Active",
       titleStart: "Install Solar on Your Roof.",
       titleHighlight: "Make Your Electricity Bill ₹0!",
-      titleEnd: "Claim Up to ₹78,000 Govt Subsidy Directly in Your Bank",
-      subtitle: "Stop paying high electricity bills. Get trusted Tata, Waaree & Adani solar panels with guaranteed ₹78,000 government subsidy and 25 years warranty.",
-      calcButton: "Check My Solar Cost in 30 Sec →",
-      whatsappButton: "Chat on WhatsApp",
+      titleEnd: "Claim Up to ₹78,000 Govt Subsidy Directly in Your Bank Account",
+      subtitle: "Free site survey across all Lucknow localities with guaranteed ₹78,000 DBT subsidy filing. Reduce your UPPCL electricity bill to ₹0 with certified Tata, Waaree & Adani solar panels and 25 years warranty.",
+      calcButton: "Check My ₹78,000 Subsidy & Savings Now →",
+      whatsappButton: "Chat with Solar Engineer",
       benefitSurvey: "Free Roof Survey",
-      benefitSurveySub: "Zero visit charges",
+      benefitSurveySub: "Zero visit charges across Lucknow",
       benefitSubsidy: "₹78,000 Subsidy",
-      benefitSubsidySub: "Direct to your bank account",
+      benefitSubsidySub: "Direct DBT bank transfer",
       benefitWarranty: "25 Years Life",
       benefitWarrantySub: "Long-term peace of mind",
       couponBannerTitle: "Get 2% Extra Discount Coupon",
-      couponBannerDesc: "Answer 3 quick questions below to unlock your discount coupon code!"
+      couponBannerDesc: "Answer 3 quick questions below to unlock your verified discount coupon!"
     },
     calculator: {
-      title: "Solar Cost Calculator",
-      subtitle: "Find out how much solar will cost for your house and how much govt subsidy you will get.",
-      step1Title: "Step 1: Your Electricity Bill",
+      title: "Solar Cost & Subsidy Calculator",
+      subtitle: "Find out your exact solar system size, UPPCL net-metering savings, and guaranteed ₹78,000 govt subsidy.",
+      step1Title: "Step 1: Your UPPCL Monthly Bill",
       q1Bill: "1. What is your average monthly electricity bill?",
       bill1: "₹1,000 - ₹2,000",
       bill2: "₹2,000 - ₹3,000",
@@ -205,7 +319,7 @@ export const translations: Record<Language, Translations> = {
       roofYes: "Yes, I have open roof",
       roofNo: "No",
       roofNotSure: "Not Sure, need engineer visit",
-      calcAction: "Calculate My Solar Cost & Subsidy →",
+      calcAction: "Check My UPPCL Subsidy & Zero-Bill Cost →",
       step2Title: "Step 2: Your Solar Setup & Subsidy",
       recommendedSize: "Recommended Solar Size",
       indicativeCost: "Approx Total Market Price",
@@ -336,6 +450,7 @@ export const translations: Record<Language, Translations> = {
       areas: "कार्य क्षेत्र (इलाके)",
       dealerProgram: "पार्टनर / डीलर बनें",
       faq: "सवाल-जवाब",
+      process: "सोलर लगाने की पूरी प्रक्रिया (लोन व कैश)",
       callNow: "सोलर एक्सपर्ट को कॉल करें",
       getQuote: "खर्चा जानें",
       quoteShort: "खर्चा",
@@ -343,27 +458,83 @@ export const translations: Record<Language, Translations> = {
       langLong: "🇬🇧 English",
       switchPrompt: "Read in English 👉"
     },
+    processSection: {
+      badge: "⚡ सोलर इंस्टालेशन व सब्सिडी का पूरा आसान रास्ता",
+      title: "लखनऊ में सोलर लगाने की पूरी प्रक्रिया",
+      subtitle: "चाहे आप 2 से 3 दिन में कैश पर लगवाएं या बैंक लोन + ₹78,000 सरकारी सब्सिडी पर — हम हर कदम पर आपके साथ रहेंगे!",
+      cashTabTitle: "⚡ विकल्प 1: फुल कैश फास्ट-ट्रैक",
+      cashTabBadge: "मात्र 2 से 3 दिन में इंस्टालेशन",
+      cashTimeline: "कुल समय: सिर्फ 2 से 3 दिन",
+      cashStep1Title: "1. कॉल करें और छत का मुफ्त सर्वे कराएं",
+      cashStep1Desc: "हमारे लखनऊ नंबर 9044914653 पर कॉल करें या ऑनलाइन फॉर्म भरें। हमारे इंजीनियर आपके घर आकर छत का सही माप और सोलर साइज तय करेंगे।",
+      cashStep2Title: "2. पसंदीदा ब्रांड (टाटा / वारी / अडानी) चुनें",
+      cashStep2Desc: "अपने बजट और बिजली लोड के अनुसार सबसे बेहतरीन टियर-1 सोलर पैनल्स और इन्वर्टर का चयन करें।",
+      cashStep3Title: "3. 48 से 72 घंटे में सोलर चालू",
+      cashStep3Desc: "हमारी सर्टिफाइड टीम मात्र 2-3 दिन में पूरा पैनल, स्ट्रक्चर और वायरिंग लगाकर सिस्टम चालू कर देती है। उसी दिन से आपका बिजली बिल ₹0 होना शुरू!",
+      loanTabTitle: "🏦 विकल्प 2: आसान बैंक लोन + ₹78,000 सब्सिडी (सबसे लोकप्रिय)",
+      loanTabBadge: "जेब से ₹0 अतिरिक्त भार • 1 से 1.5 महीना",
+      loanTimeline: "कुल समय: ~1 से 1.5 महीना (बिग आइडिया सोलर की 100% हैंडहोल्डिंग सहायता)",
+      loanIntro: "एक साथ मोटी रकम देने की जरूरत नहीं! हम खुद आपको बैंक ले जाकर आसान सोलर लोन पास कराते हैं और ₹78,000 सब्सिडी आपके खाते में मंगवाते हैं।",
+      step1Title: "स्टेप 1: जरूरी कागजात और बैंक लोन अप्लाई में मदद",
+      step1Sub: "सिर्फ 4 आसान कागजात चाहिए • हम खुद आपके साथ बैंक चलेंगे",
+      step1Desc: "आपको सरकारी दफ्तरों या बैंकों के चक्कर नहीं काटने होंगे। बिग आइडिया सोलर की टीम एसबीआई, पीएनबी, केनरा बैंक या बैंक ऑफ बड़ौदा में लोन फॉर्म भरवाने में पूरी मदद करती है।",
+      docsRequiredTitle: "📋 लोन के लिए सिर्फ ये 4 कागजात चाहिए:",
+      doc1: "आधार कार्ड (Aadhar Card)",
+      doc2: "बैंक पासबुक / कैंसिल्ड चेक (Bank Passbook)",
+      doc3: "मकान की रजिस्ट्री / स्वामित्व प्रमाण (House Registry)",
+      doc4: "नवीनतम बिजली का बिल (Electricity Bill)",
+      step1Assistance: "✨ किसी काउंटर पर भटकना नहीं पड़ेगा — हमारे एग्जीक्यूटिव खुद साथ रहकर पूरा प्रोसेस करवाते हैं!",
+      step2Title: "स्टेप 2: 1 से 2 हफ्ते में बैंक लोन पास व खाते में ट्रांसफर",
+      step2Sub: "1 से 2 हफ्तों में लोन अप्रूवल",
+      step2Desc: "बैंक आपके कागजात वेरीफाई करके सस्ती ब्याज दर वाला सोलर लोन पास करता है। स्वीकृत राशि सीधे आपके बैंक खाते में क्रेडिट हो जाती है।",
+      step3Title: "स्टेप 3: घर पर सोलर इंस्टालेशन व सरकारी पोर्टल फोटो",
+      step3Sub: "छत पर सोलर पैनल फिटिंग व फोटो वेरिफिकेशन",
+      step3Desc: "लोन की राशि से हमारी सर्टिफाइड टीम आपकी छत पर बेहतरीन सोलर पैनल लगा देती है। सोलर लगने के बाद मकान मालिक के साथ सोलर पैनल की वेरिफाइड फोटो खींची जाती है जो पीएम सूर्य घर पोर्टल पर अपलोड होती है।",
+      step4Title: "स्टेप 4: ₹78,000 सरकारी सब्सिडी सीधे आपके बैंक खाते में",
+      step4Sub: "1 से 2 महीने में सब्सिडी राशि बैंक में ट्रांसफर",
+      step4Desc: "बिग आइडिया सोलर बिजली विभाग की नेट-मीटरिंग रिपोर्ट व आपकी फोटो पीएम सूर्य घर पोर्टल पर जमा करता है। केंद्र सरकार की ₹78,000 की सीधी सब्सिडी (DBT) सीधे आपके बैंक खाते में ट्रांसफर हो जाती है।",
+      step5Title: "स्टेप 5: सब्सिडी से लोन कम करें और बिजली बचत से आसान किस्त भरें!",
+      step5Sub: "सोलर का पूरा खर्चा बिजली बिल की बचत से ही निकल जाता है",
+      step5Desc: "खाते में आई ₹78,000 सब्सिडी को बैंक लोन में जमा कर दें — जिससे आपका मूल लोन बहुत छोटा हो जाता है। अब हर महीने बिजली बिल में जो ₹3,000 से ₹5,000 की बचत होगी, उसी से आराम से बची हुई छोटी सी किस्त (EMI) भर जाती है। लोन खत्म होते ही 20+ साल तक 100% मुफ्त बिजली का आनंद लें!",
+      financeGraphicTitle: "💡 असली हिसाब: सोलर अपने आप अपनी किस्त कैसे भरता है?",
+      financeGraphicDesc: "समझें क्यों लखनऊ के 90%+ परिवार बैंक लोन + सब्सिडी विकल्प चुनते हैं:",
+      prevBillLabel: "सोलर लगाने से पहले हर महीने का बिजली बिल:",
+      newBillLabel: "सोलर लगाने के बाद नया बिजली बिल:",
+      subsidySlashLabel: "पीएम सूर्य घर सरकारी सब्सिडी (सीधे खाते में):",
+      monthlyEmiLabel: "सब्सिडी घटाने के बाद छोटी मासिक किस्त (EMI):",
+      netBenefitLabel: "हर महीने आपकी जेब में होने वाली सीधी शुद्ध बचत:",
+      zeroBurdenNote: "🛡️ आपकी जेब से ₹0 एक्स्ट्रा खर्च: जो पैसा आप पहले बिजली विभाग को दे रहे थे, उसी पैसे से आपका अपना सोलर सिस्टम बन गया। किस्त पूरी होने पर अगले 20 साल बिजली पूरी तरह फ्री!",
+      ctaTitle: "बैंक लोन व सब्सिडी सहायता के साथ सोलर लगाना चाहते हैं?",
+      ctaButton: "सोलर लोन पात्रता व फ्री सर्वे बुक करें →",
+      callExpertButton: "लोन एक्सपर्ट से बात करें"
+    },
+    trustBanner: {
+      upneda: "🏛️ यूपीनेडा (UPNEDA) मान्यता प्राप्त चैनल पार्टनर",
+      uppcl: "⚡ 100% यूपीपीसीएल (MVVNL) स्मार्ट नेट-मीटरिंग अप्रूव्ड",
+      dbt: "💰 ₹78,000 सीधी DBT बैंक सब्सिडी सहायता",
+      homes: "🏠 500+ लखनऊ घरों में सफल सोलर"
+    },
     hero: {
-      badge: "🏛️ पीएम सूर्य घर योजना - ₹78,000 सरकारी सब्सिडी चालू है",
+      badge: "🏛️ पीएम सूर्य घर मुफ्त बिजली योजना • ₹78,000 सीधी DBT सब्सिडी चालू",
       titleStart: "अपनी छत पर सोलर लगवाएं,",
       titleHighlight: "बिजली का बिल हमेशा के लिए 0 करें!",
       titleEnd: "और पाएं ₹78,000 की सीधी सरकारी सब्सिडी अपने बैंक खाते में",
-      subtitle: "महंगी बिजली से हमेशा के लिए छुटकारा पाएं। टाटा, वारी और अडानी जैसे टॉप ब्रांड्स के सोलर पैनल लगवाएं और ₹78,000 सरकारी सब्सिडी सीधे अपने बैंक खाते में पाएं।",
-      calcButton: "सिर्फ 30 सेकंड में सोलर खर्चा जानें →",
-      whatsappButton: "व्हाट्सएप पर बात करें",
+      subtitle: "लखनऊ के सभी इलाकों में फ्री साइट सर्वे और ₹78,000 डायरेक्ट बैंक ट्रांसफर (DBT) सरकारी सब्सिडी की 100% गारंटी। टाटा, वारी व अडानी सोलर पैनल लगवाएं और अपना यूपीपीसीएल बिजली बिल हमेशा के लिए ₹0 करें।",
+      calcButton: "अपनी ₹78,000 सब्सिडी व बचत अभी चेक करें →",
+      whatsappButton: "सोलर इंजीनियर से बात करें",
       benefitSurvey: "छत का मुफ्त सर्वे",
-      benefitSurveySub: "0 रुपया विज़िट चार्ज",
+      benefitSurveySub: "0 रुपया विज़िट चार्ज (पूरे लखनऊ में)",
       benefitSubsidy: "₹78,000 सब्सिडी",
-      benefitSubsidySub: "सीधे आपके बैंक खाते में",
+      benefitSubsidySub: "सीधा बैंक ट्रांसफर (DBT)",
       benefitWarranty: "25 साल की वारंटी",
       benefitWarrantySub: "सालों-साल बिना किसी टेंशन के",
       couponBannerTitle: "तुरंत 2% की अतिरिक्त छूट का कूपन पाएं",
       couponBannerDesc: "नीचे सिर्फ 3 आसान सवालों के जवाब दें और अपना डिस्काउंट कूपन अनलॉक करें!"
     },
     calculator: {
-      title: "सोलर खर्चा कैलकुलेटर",
-      subtitle: "जानें आपके घर पर सोलर लगाने में कितना खर्चा आएगा और कितनी सरकारी सब्सिडी मिलेगी।",
-      step1Title: "स्टेप 1: आपका बिजली बिल",
+      title: "सोलर खर्चा व सब्सिडी कैलकुलेटर",
+      subtitle: "जानें आपके घर के लिए सही सोलर साइज, यूपीपीसीएल नेट-मीटरिंग बचत और ₹78,000 सरकारी सब्सिडी।",
+      step1Title: "स्टेप 1: आपका यूपीपीसीएल मासिक बिजली बिल",
       q1Bill: "1. आपका हर महीने औसत बिजली का बिल कितना आता है?",
       bill1: "₹1,000 - ₹2,000",
       bill2: "₹2,000 - ₹3,000",
@@ -377,7 +548,7 @@ export const translations: Record<Language, Translations> = {
       roofYes: "हाँ, अपनी खुली छत है",
       roofNo: "नहीं",
       roofNotSure: "पक्का नहीं, इंजीनियर को दिखाएंगे",
-      calcAction: "सोलर खर्चा और सब्सिडी देखें →",
+      calcAction: "मेरा यूपीपीसीएल बिजली बिल सब्सिडी व शून्य-बिल खर्चा चेक करें →",
       step2Title: "स्टेप 2: आपके घर के लिए सही सोलर व सब्सिडी",
       recommendedSize: "आपके घर के लिए सही सोलर क्षमता",
       indicativeCost: "अनुमानित कुल सिस्टम खर्चा",

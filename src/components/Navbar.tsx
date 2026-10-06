@@ -44,9 +44,10 @@ export default function Navbar() {
   };
 
   const navLinks = [
+    { name: t.nav.process, href: "#process", icon: Zap },
     { name: t.nav.calculator, href: "#calculator", icon: Calculator },
-    { name: t.nav.whySolar, href: "#why-solar", icon: Zap },
-    { name: t.nav.brands, href: "#brands", icon: Sun },
+    { name: t.nav.whySolar, href: "#why-solar", icon: Sun },
+    { name: t.nav.brands, href: "#brands", icon: ShieldCheck },
     { name: t.nav.areas, href: "#areas", icon: MapPin },
     { name: t.nav.dealerProgram, href: "#dealer", icon: ShieldCheck },
     { name: t.nav.faq, href: "#faq", icon: MessageSquare }
@@ -58,11 +59,11 @@ export default function Navbar() {
       <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white text-[11px] py-1.5 px-3 font-semibold">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left / Center announcement badge */}
-          <div className="flex items-center gap-1.5 truncate">
+          <div className="flex items-center gap-1.5 min-w-0">
             <span className="bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shrink-0">
-              ALL LUCKNOW
+              PM SURYA GHAR
             </span>
-            <span className="truncate text-slate-100 font-medium text-[11px]">
+            <span className="text-slate-100 font-medium text-[11px] leading-tight break-words">
               {language === "hi"
                 ? "📍 पूरे लखनऊ में हमारी सर्विस उपलब्ध है • ₹78,000 सब्सिडी चालू"
                 : "📍 All Lucknow Service Available • ₹78,000 PM Subsidy Active"}
@@ -109,9 +110,9 @@ export default function Navbar() {
                   LUCKNOW
                 </span>
               </div>
-              <p className="text-[10px] text-emerald-700 font-bold leading-tight mt-0.5 flex items-center gap-1 truncate">
+              <p className="text-[10px] text-emerald-700 font-bold leading-tight mt-0.5 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                <span className="truncate">
+                <span className="whitespace-nowrap">
                   {language === "hi" ? "पूरे लखनऊ में सेवा उपलब्ध" : "All Lucknow Service"}
                 </span>
               </p>
@@ -119,12 +120,12 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-4 lg:gap-6">
+          <nav className="hidden md:flex items-center gap-3 lg:gap-5">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-xs lg:text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors"
+                className="text-xs lg:text-sm font-bold text-slate-700 hover:text-emerald-600 transition-colors whitespace-nowrap"
               >
                 {link.name}
               </a>
@@ -133,7 +134,7 @@ export default function Navbar() {
 
           {/* Right Action buttons */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* 1-Click Language Switcher with Dynamic Popup */}
+            {/* 1-Click Language Switcher with Mobile-Safe Popup */}
             <div className="relative">
               <button
                 onClick={handleToggle}
@@ -150,27 +151,27 @@ export default function Navbar() {
                 <span className="hidden sm:inline">{t.nav.langLong}</span>
               </button>
 
-              {/* Floating Language Switcher Prompt Bubble */}
+              {/* Language Switcher Prompt: Fixed Bottom Toast on Mobile, Dropdown on Desktop */}
               {showLanguagePopup && language === "en" && (
-                <div className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] p-3 bg-slate-900 text-white rounded-2xl shadow-2xl border border-amber-400/50 text-left z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  {/* Speech arrow */}
-                  <div className="absolute -top-1.5 right-6 w-3 h-3 bg-slate-900 border-t border-l border-amber-400/50 rotate-45" />
+                <div className="fixed bottom-20 left-3 right-3 sm:left-auto sm:right-0 sm:top-full sm:bottom-auto sm:mt-2 sm:w-80 z-50 max-w-md mx-auto sm:mx-0 p-3.5 sm:p-4 bg-slate-950/95 sm:bg-slate-900 text-white rounded-2xl shadow-2xl border-2 border-amber-400 backdrop-blur-md animate-in fade-in slide-in-from-bottom-3 sm:slide-in-from-top-2 duration-200">
+                  {/* Speech arrow on desktop */}
+                  <div className="hidden sm:block absolute -top-1.5 right-6 w-3 h-3 bg-slate-900 border-t border-l border-amber-400 rotate-45" />
 
-                  <div className="relative flex items-start justify-between gap-2">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1 text-amber-300 text-[11px] font-black">
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>आसान हिंदी में देखें</span>
+                  <div className="relative flex items-start justify-between gap-2.5">
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 text-amber-300 text-xs font-black">
+                        <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span>आसान हिंदी में पढ़ें (Read in Hindi)</span>
                       </div>
-                      <p className="text-[11px] text-slate-200 leading-snug font-medium">
-                        यहाँ क्लिक करके पूरी जानकारी अपनी भाषा <b>हिंदी</b> में पढ़ें।
+                      <p className="text-xs text-slate-200 leading-snug font-medium break-words">
+                        यहाँ क्लिक करके पूरी जानकारी अपनी भाषा <b>हिंदी</b> में तुरंत पढ़ें।
                       </p>
                       <button
                         type="button"
                         onClick={handleToggle}
-                        className="mt-1.5 px-2.5 py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 text-[10px] font-black rounded-lg inline-block transition-colors"
+                        className="mt-1 px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black rounded-xl inline-flex items-center gap-1 transition-colors shadow-md shadow-amber-400/20 active:scale-95"
                       >
-                        हिंदी में बदलें →
+                        <span>हाँ, हिंदी में बदलें →</span>
                       </button>
                     </div>
 
@@ -180,10 +181,10 @@ export default function Navbar() {
                         setShowLanguagePopup(false);
                         sessionStorage.setItem("seen_lang_prompt", "true");
                       }}
-                      className="text-slate-400 hover:text-white p-0.5 rounded"
+                      className="text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800 hover:bg-slate-700 shrink-0"
                       aria-label="Close prompt"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -225,7 +226,7 @@ export default function Navbar() {
               <p className="text-xs font-black text-emerald-950">
                 {language === "hi" ? "📍 पूरे लखनऊ में हमारी सर्विस उपलब्ध है" : "📍 All Lucknow We Provide Service"}
               </p>
-              <p className="text-[10px] text-emerald-800 font-medium leading-tight mt-0.5">
+              <p className="text-[10px] text-emerald-800 font-medium leading-tight mt-0.5 break-words">
                 {language === "hi"
                   ? "गोमती नगर, अलीगंज, इंदिरानगर, कल्यानपुर, आशियाना, चिनहट व सभी 110+ वार्डों में 0 रुपया विज़िट चार्ज पर रूफटॉप सर्वे।"
                   : "Gomti Nagar, Aliganj, Indiranagar, Kalyanpur, Ashiyana, Chinhat & all 110+ wards with 100% Free Doorstep Survey."}
@@ -233,7 +234,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Navigation Links Grid/List */}
+          {/* Navigation Links Grid */}
           <div className="grid grid-cols-2 gap-1.5">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -242,10 +243,10 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-800 hover:text-emerald-700 text-xs font-bold transition-colors border border-slate-100"
+                  className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-800 hover:text-emerald-700 text-xs font-bold transition-colors border border-slate-100 min-h-[44px]"
                 >
                   <Icon className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span className="truncate">{link.name}</span>
+                  <span className="break-words leading-tight">{link.name}</span>
                 </a>
               );
             })}
@@ -255,7 +256,7 @@ export default function Navbar() {
           <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
             <a
               href={`tel:${CONTACT_INFO.phoneRaw}`}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold rounded-xl text-xs transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold rounded-xl text-xs transition-colors min-h-[44px]"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-600" />
               <span>{CONTACT_INFO.phone}</span>
@@ -264,7 +265,7 @@ export default function Navbar() {
               href={`https://wa.me/${CONTACT_INFO.whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs min-h-[44px]"
             >
               <MessageSquare className="w-3.5 h-3.5" />
               <span>WhatsApp</span>

@@ -58,13 +58,13 @@ export default function BrandComparison() {
                         {brand.name.slice(0, 2).toUpperCase()}
                       </div>
 
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 truncate">
+                          <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 break-words">
                             {brand.name}
                           </h3>
                         </div>
-                        <p className="text-[11px] text-slate-500 truncate">
+                        <p className="text-[11px] text-slate-600 leading-snug break-words">
                           {language === "hi" ? brand.tagline.hi : brand.tagline.en}
                         </p>
                         <p className="text-[11px] font-bold text-emerald-700 mt-0.5">
@@ -95,7 +95,7 @@ export default function BrandComparison() {
                         </div>
                         <div>
                           <span className="font-bold text-slate-500 text-[10px] block">CELL TECH:</span>
-                          <span className="font-extrabold text-slate-900 truncate block">{brand.cellType}</span>
+                          <span className="font-extrabold text-slate-900 break-words block">{brand.cellType}</span>
                         </div>
                       </div>
 

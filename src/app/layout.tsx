@@ -23,6 +23,15 @@ export const metadata: Metadata = {
   title: "BigIdeaSolar - Rooftop Solar Installation & PM Surya Ghar Subsidy up to ₹78,000",
   description:
     "BigIdeaSolar is Lucknow's premier Rooftop Solar Platform at Kalyanpur. Install certified Tier-1 Tata, Waaree & Adani solar panels. Calculate your solar budget, claim ₹78,000 central subsidy & reduce electricity bills to zero.",
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" }
+    ],
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
+  },
   keywords: [
     "BigIdeaSolar",
     "Big Idea Solar Lucknow",
@@ -42,7 +51,8 @@ export const metadata: Metadata = {
       "Get 0 electricity bill with PM Surya Ghar Muft Bijli Yojana. Instant solar cost calculation, 2% discount coupon & free rooftop survey from BigIdeaSolar.",
     type: "website",
     locale: "en_IN",
-    siteName: "BigIdeaSolar"
+    siteName: "BigIdeaSolar",
+    images: [{ url: "/icon.png", width: 512, height: 512, alt: "BigIdeaSolar Logo" }]
   }
 };
 

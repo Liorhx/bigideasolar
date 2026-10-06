@@ -70,12 +70,14 @@ export default function FAQSection() {
               <div className="w-8 h-8 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 shadow-xs">
                 <Sun className="w-4 h-4" />
               </div>
-              <div className="min-w-0">
-                <h4 className="font-extrabold text-xs text-slate-900 truncate">
-                  {language === "hi" ? "कोई सवाल है?" : "Still have questions?"}
+              <div className="min-w-0 flex-1">
+                <h4 className="font-extrabold text-xs text-slate-900 break-words">
+                  {language === "hi" ? "कोई अन्य सवाल है?" : "Still have questions?"}
                 </h4>
-                <p className="text-[10px] text-slate-600 truncate">
-                  Chat with our solar expert on WhatsApp.
+                <p className="text-[10px] text-slate-600 leading-snug break-words">
+                  {language === "hi"
+                    ? "हमारे सोलर लोन व टेक्निकल एक्सपर्ट से व्हाट्सएप पर तुरंत बात करें।"
+                    : "Chat with our solar expert on WhatsApp."}
                 </p>
               </div>
             </div>

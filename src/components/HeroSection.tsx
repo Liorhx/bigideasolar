@@ -59,80 +59,78 @@ export default function HeroSection() {
                   </>
                 )}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-200 line-clamp-2 max-w-2xl drop-shadow-xs font-medium">
-                {language === "hi"
-                  ? "अपने बिजली बिल को शून्य करें और PM Surya Ghar Yojana के तहत ₹78,000 सरकारी सब्सिडी पात्रता चेक करें।"
-                  : "Apne bijli bill ko kam karein aur PM Surya Ghar Yojana ke tehat subsidy eligibility check karein."}
+              <p className="text-xs sm:text-sm text-slate-200 max-w-2xl drop-shadow-xs font-medium leading-relaxed">
+                {t.hero.subtitle}
               </p>
             </div>
           </div>
 
-          {/* Primary CTA Buttons (Matching Screen 1) */}
+          {/* Primary CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
             <a
               href="#calculator"
-              className="w-full sm:flex-1 py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base text-center shadow-lg shadow-emerald-600/30 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+              className="w-full sm:flex-1 py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base text-center shadow-lg shadow-emerald-600/30 active:scale-[0.99] transition-all flex items-center justify-center gap-2 min-h-[48px]"
             >
-              <span>{language === "hi" ? "सोलर लागत कैलकुलेटर →" : "Solar Cost Calculator →"}</span>
+              <span>{t.hero.calcButton}</span>
             </a>
 
             <a
               href={`tel:${CONTACT_INFO.phoneRaw}`}
-              className="w-full sm:w-auto py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm text-center border border-slate-700 transition-colors flex items-center justify-center gap-1.5"
+              className="w-full sm:w-auto py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm text-center border border-slate-700 transition-colors flex items-center justify-center gap-1.5 min-h-[48px]"
             >
               <PhoneCall className="w-3.5 h-3.5 text-amber-300" />
               <span>{language === "hi" ? `एक्सपर्ट कॉल: ${CONTACT_INFO.phone}` : `Call: ${CONTACT_INFO.phone}`}</span>
             </a>
           </div>
 
-          {/* 3 Pillar Trust Cards (Matching Screen 1: Free Consultation, Site Survey, Subsidy Guidance) */}
+          {/* 3 Pillar Trust Cards */}
           <div className="grid grid-cols-3 gap-2 pt-1">
-            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center">
+            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center flex flex-col items-center justify-center">
               <div className="w-7 h-7 mx-auto rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-400 mb-1">
                 <Zap className="w-3.5 h-3.5" />
               </div>
-              <p className="text-[11px] font-bold text-white leading-tight">
+              <p className="text-[11px] font-bold text-white leading-tight break-words">
                 {language === "hi" ? "फ्री कंसल्टेशन" : "Free Consultation"}
               </p>
             </div>
 
-            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center">
+            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center flex flex-col items-center justify-center">
               <div className="w-7 h-7 mx-auto rounded-lg bg-teal-500/15 flex items-center justify-center text-teal-400 mb-1">
                 <Home className="w-3.5 h-3.5" />
               </div>
-              <p className="text-[11px] font-bold text-white leading-tight">
+              <p className="text-[11px] font-bold text-white leading-tight break-words">
                 {language === "hi" ? "साइट सर्वे" : "Site Survey"}
               </p>
             </div>
 
-            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center">
+            <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-center flex flex-col items-center justify-center">
               <div className="w-7 h-7 mx-auto rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-400 mb-1">
                 <Banknote className="w-3.5 h-3.5" />
               </div>
-              <p className="text-[11px] font-bold text-white leading-tight">
+              <p className="text-[11px] font-bold text-white leading-tight break-words">
                 {language === "hi" ? "सब्सिडी सहायता" : "Subsidy Guidance"}
               </p>
             </div>
           </div>
 
-          {/* Exclusive 2% Discount Coupon Banner (Screen 1 Bottom Banner) */}
+          {/* Exclusive 2% Discount Coupon Banner */}
           <a
             href="#calculator"
             className="block rounded-2xl bg-gradient-to-r from-amber-500/15 via-emerald-500/15 to-teal-500/15 border border-amber-400/40 p-3 sm:p-4 backdrop-blur-xs hover:border-amber-400/70 transition-all active:scale-[0.99]"
           >
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-amber-400 text-slate-950 shrink-0 shadow-xs">
-                <Gift className="w-4 h-4 sm:w-5 sm:h-5 animate-bounce" />
+              <div className="p-2.5 rounded-xl bg-amber-400 text-slate-950 shrink-0 shadow-xs">
+                <Gift className="w-5 h-5 animate-bounce" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <h3 className="text-xs sm:text-sm font-extrabold text-amber-300 truncate">
+                  <h3 className="text-xs sm:text-sm font-extrabold text-amber-300 break-words leading-tight">
                     {language === "hi" ? "तुरंत 2% सोलर डिस्काउंट कूपन पाएं" : "Get Instant 2% Solar Discount Coupon"}
                   </h3>
                 </div>
-                <p className="text-[11px] text-slate-300 mt-0.5 truncate">
+                <p className="text-[11px] text-slate-300 mt-0.5 leading-snug break-words">
                   {language === "hi"
-                    ? "फॉर्म भरें और अपना यूनिक कूपन कोड तुरंत पाएं।"
+                    ? "फॉर्म भरें और अपना 2% यूनिक कूपन कोड तुरंत पाएं।"
                     : "Form fill karein aur apna unique coupon code turant paayein."}
                 </p>
               </div>
