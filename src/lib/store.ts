@@ -50,7 +50,7 @@ const initialLeads: LeadItem[] = [
     discountPercent: 2,
     estimatedCost: 165000,
     netCost: 87000,
-    subsidy: 78000,
+    subsidy: 108000,
     isCouponVerified: true,
     notes: "Wants site survey on Sunday morning. Has 400 sqft RCC roof.",
     createdAt: "2026-05-20T10:30:00Z"

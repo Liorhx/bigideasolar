@@ -18,7 +18,7 @@ export default function TestimonialsSection() {
       text:
         language === "hi"
           ? "गोमती नगर में हमारी छत पर 3kW का सिस्टम लगाया गया। बिल ₹3800 से घटकर सिर्फ ₹120 रह गया और ₹78,000 की सब्सिडी 24 दिनों में बैंक खाते में आ गई।"
-          : "Installed a 3kW Tata Solar system in Gomti Nagar. Summer bill reduced from ₹3,800 to ₹120. ₹78,000 subsidy credited in 24 days!"
+          : "Installed a 3kW Tata Solar system in Gomti Nagar. Summer bill reduced from ₹3,800 to ₹120. ₹108,000 subsidy credited in 24 days!"
     },
     {
       name: language === "hi" ? "अमित त्रिवेदी" : "Amit Trivedi",

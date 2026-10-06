@@ -232,7 +232,7 @@ export const translations: Record<Language, Translations> = {
     processSection: {
       badge: "⚡ Complete Solar Installation & Subsidy Roadmap",
       title: "How Solar Installation Works in Lucknow",
-      subtitle: "Choose between 48-Hour Instant Cash Installation or Easy Bank Loan + ₹78,000 Govt Subsidy where electricity bill savings pay your EMI!",
+      subtitle: "Choose between 48-Hour Instant Cash Installation or Easy Bank Loan + ₹108,000 Govt Subsidy where electricity bill savings pay your EMI!",
       cashTabTitle: "⚡ Option 2: Fast-Track Cash Payment",
       cashTabBadge: "Ready in 2–3 Days",
       cashTimeline: "Total Time: Just 2 to 3 Days",
@@ -245,7 +245,7 @@ export const translations: Record<Language, Translations> = {
       loanTabTitle: "🏦 Option 1: Easy Bank Loan + ₹108,000 Subsidy (Most Popular)",
       loanTabBadge: "Zero Out-of-Pocket Burden • 1 to 1.5 Months",
       loanTimeline: "Total Timeline: ~1 to 1.5 Months (100% BigIdeaSolar Handholding)",
-      loanIntro: "No need to spend lump-sum cash! We personally guide you to the bank, get your solar loan sanctioned, and secure your ₹78,000 PM Surya Ghar subsidy.",
+      loanIntro: "No need to spend lump-sum cash! We personally guide you to the bank, get your solar loan sanctioned, and secure your ₹108,000 PM Surya Ghar subsidy.",
       step1Title: "Step 1: Document Collection & Bank Visit Assistance",
       step1Sub: "Only 4 simple documents needed • We accompany you to the bank",
       step1Desc: "Our BigIdeaSolar team personally helps you fill and submit the solar loan application at leading partner banks (SBI, PNB, Canara Bank, Bank of Baroda).",
@@ -261,9 +261,9 @@ export const translations: Record<Language, Translations> = {
       step3Title: "Step 3: Rapid Rooftop Installation & PM Portal Photo",
       step3Sub: "Solar panels mounted & geotagged verification",
       step3Desc: "Using the credited funds, our certified technicians install high-efficiency solar panels on your roof. Once installed, an official verified photo of the homeowner with the installed rooftop solar system is taken for PM Surya Ghar portal submission.",
-      step4Title: "Step 4: Up to ₹78,000 Govt Subsidy Credited in Your Bank",
+      step4Title: "Step 4: Up to ₹108,000 Govt Subsidy Credited in Your Bank",
       step4Sub: "Direct DBT subsidy received in 1 to 2 months",
-      step4Desc: "BigIdeaSolar submits your verified photo and DISCOM inspection report on the National Portal. The Government of India credits up to ₹78,000 subsidy directly into your bank account (in installments / within 1-2 months).",
+      step4Desc: "BigIdeaSolar submits your verified photo and DISCOM inspection report on the National Portal. The Government of India credits up to ₹108,000 subsidy directly into your bank account (in installments / within 1-2 months).",
       step5Title: "Step 5: Deposit Subsidy to Reduce Loan + Saved Bills Pay Remaining EMI !",
       step5Sub: "Solar literally pays for itself with ₹0 burden on your family income",
       step5Desc: "Deposit your ₹108,000 subsidy into the bank loan account to drastically slash the principal loan balance. Then, use the ₹3,000 to ₹5,000 you save every month on electricity bills to easily pay the small remaining monthly EMI! Once the loan is cleared, enjoy 20+ years of 100% FREE electricity!",
@@ -290,7 +290,7 @@ export const translations: Record<Language, Translations> = {
       titleStart: "Install Solar on Your Roof.",
       titleHighlight: "Make Your Electricity Bill ₹0!",
       titleEnd: "Claim Up to ₹108,000 Govt Subsidy Directly in Your Bank Account",
-      subtitle: "Free site survey across all Lucknow localities with guaranteed ₹78,000 DBT subsidy filing. Reduce your UPPCL electricity bill to ₹0 with certified Tata, Waaree & Adani solar panels and 25 years warranty.",
+      subtitle: "Free site survey across all Lucknow localities with guaranteed ₹108,000 DBT subsidy filing. Reduce your UPPCL electricity bill to ₹0 with certified Tata, Waaree & Adani solar panels and 25 years warranty.",
       calcButton: "Check My ₹108,000 Subsidy & Savings Now →",
       whatsappButton: "Chat with Solar Engineer",
       benefitSurvey: "Free Roof Survey",
@@ -405,11 +405,11 @@ export const translations: Record<Language, Translations> = {
       items: [
         {
           q: "How much government subsidy will I get on solar?",
-          a: "For residential homes in Lucknow & UP, you get up to ₹78,000 Central Govt Subsidy under PM Surya Ghar Yojana. The money is transferred directly to your bank account within 30 days of net-meter installation."
+          a: "For residential homes in Lucknow & UP, you get up to ₹108,000 Central Govt Subsidy under PM Surya Ghar Yojana. The money is transferred directly to your bank account within 30 days of net-meter installation."
         },
         {
           q: "How much will a 3 kW solar system cost me after subsidy?",
-          a: "A 3 kW complete system costs around ₹1,45,000 - ₹1,75,000 before subsidy. After the ₹78,000 government subsidy, your actual out-of-pocket expense is only around ₹67,000 - ₹97,000."
+          a: "A 3 kW complete system costs around ₹1,70,000 - ₹2,10,000 before subsidy. After the ₹108,000 government subsidy, your actual out-of-pocket expense is only around ₹62,000 - ₹1,02,000."
         },
         {
           q: "Will solar panels work on cloudy or rainy days?",

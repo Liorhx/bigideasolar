@@ -32,7 +32,7 @@ export default function HomePage() {
           <BrandComparison />
           <AreaCoverage />
           <TestimonialsSection />
-          <DealerPartnerSection />
+
           <FAQSection />
         </main>
         <Footer />

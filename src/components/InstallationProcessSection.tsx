@@ -291,7 +291,7 @@ export default function InstallationProcessSection() {
 
                 <div className="p-3.5 rounded-2xl bg-slate-800/90 border border-slate-700 space-y-1">
                   <p className="text-[11px] text-slate-400 font-semibold">{p.subsidySlashLabel}</p>
-                  <p className="text-lg font-black text-emerald-400">+₹78,000</p>
+                  <p className="text-lg font-black text-emerald-400">+₹108,000</p>
                   <p className="text-[10px] text-emerald-300">Directly into your bank</p>
                 </div>
 
