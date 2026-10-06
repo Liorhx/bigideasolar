@@ -88,15 +88,7 @@ export default function AreaCoverage() {
           )}
 
           {/* Big Green CTA Button (Matching Screen 9) */}
-          <div className="pt-1">
-            <button
-              type="button"
-              onClick={handleCheckArea}
-              className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5"
-            >
-              <span>{language === "hi" ? "मेरे क्षेत्र में उपलब्धता जांचें →" : "Check Availability in My Area →"}</span>
-            </button>
-          </div>
+
         </div>
       </div>
     </section>

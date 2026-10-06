@@ -65,8 +65,8 @@ export default function Navbar() {
             </span>
             <span className="text-slate-100 font-medium text-[11px] leading-tight break-words">
               {language === "hi"
-                ? "📍 पूरे लखनऊ में हमारी सर्विस उपलब्ध है • ₹78,000 सब्सिडी चालू"
-                : "📍 All Lucknow Service Available • ₹78,000 PM Subsidy Active"}
+                ? "📍 पूरे लखनऊ में हमारी सर्विस उपलब्ध है • 108,000 सब्सिडी चालू"
+                : "📍 All Lucknow Service Available • ₹108,000 PM Subsidy Active"}
             </span>
           </div>
 

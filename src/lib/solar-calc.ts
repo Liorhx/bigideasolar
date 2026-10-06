@@ -19,40 +19,72 @@ export interface SolarCalculationResult {
 }
 
 export function calculateSolar(billAmount: number): SolarCalculationResult {
-  // Average tariff in UP / Lucknow: ~₹7.5 per unit
+  // Average tariff in UP / Lucknow (UPPCL): ~₹7.5 per unit
   const tariffPerUnit = 7.5;
   const estimatedUnitsMonthly = Math.round(billAmount / tariffPerUnit);
 
-  // 1 kW solar generates approx 120-130 units per month in Lucknow / North India (4-4.5 units/day)
+  // 1 kW solar generates approx 120-130 units per month in Lucknow (4-4.5 units/day)
   let kw = Math.ceil(estimatedUnitsMonthly / 125);
-  if (kw < 2) kw = 2; // Minimum standard grid-tied residential install
+  if (kw < 1) kw = 1;
   if (kw > 15) kw = 15;
 
-  // Approximate cost per kW in market before subsidy: ₹55,000 - ₹62,000 per kW
-  const costMin = kw * 50000;
-  const costMax = kw * 60000;
+  // Approximate gross cost per kW before subsidy:
+  // 1 kW: ₹55,000 - ₹70,000
+  // 2 kW: ₹1,20,000 - ₹1,40,000
+  // 3 kW: ₹1,75,000 - ₹2,00,000
+  // >3 kW: ₹55,000 - ₹65,000 / kW
+  let costMin = 0;
+  let costMax = 0;
 
-  // Central PM Surya Ghar Muft Bijli Yojana subsidy:
-  // 1 kW: ₹30,000
+  if (kw === 1) {
+    costMin = 55000;
+    costMax = 70000;
+  } else if (kw === 2) {
+    costMin = 120000;
+    costMax = 140000;
+  } else if (kw === 3) {
+    costMin = 175000;
+    costMax = 200000;
+  } else {
+    costMin = kw * 55000;
+    costMax = kw * 65000;
+  }
+
+  // Central PM Surya Ghar Subsidy:
+  // 1 kW: ₹0 (No subsidy provided)
   // 2 kW: ₹60,000
   // 3 kW or above: ₹78,000 max
   let centralSubsidy = 0;
-  if (kw === 1) centralSubsidy = 30000;
-  else if (kw === 2) centralSubsidy = 60000;
-  else centralSubsidy = 78000;
+  if (kw === 1) {
+    centralSubsidy = 0;
+  } else if (kw === 2) {
+    centralSubsidy = 60000;
+  } else {
+    centralSubsidy = 78000;
+  }
 
-  // UP State Government Surya Mitra / UPNEDA additional subsidy:
-  // ₹15,000/kW up to max ₹30,000
+  // UP State Government (UPNEDA) additional subsidy:
+  // 1 kW: ₹0 (No subsidy provided)
+  // 2 kW: ₹30,000
+  // 3 kW or above: ₹30,000 (Capped at ₹30,000 max)
   let stateSubsidy = 0;
-  if (kw === 1) stateSubsidy = 15000;
-  else stateSubsidy = 30000;
+  if (kw === 1) {
+    stateSubsidy = 0;
+  } else {
+    stateSubsidy = 30000;
+  }
 
-  const totalSubsidy = centralSubsidy; // Keep conservative on central guarantee, highlight up to total
+  // Total Combined Direct Subsidy: Central + UP State
+  // 1 kW: ₹0 (No subsidy provided)
+  // 2 kW: ₹60,000 + ₹30,000 = ₹90,000
+  // 3 kW: ₹78,000 + ₹30,000 = ₹1,08,000
+  // >3 kW: ₹78,000 + ₹30,000 = ₹1,08,000
+  const totalSubsidy = centralSubsidy + stateSubsidy;
 
   const netCostMin = Math.max(20000, costMin - totalSubsidy);
   const netCostMax = Math.max(30000, costMax - totalSubsidy);
 
-  // 1 kW requires ~100 sq.ft shadow-free area
+  // 1 kW requires ~80-100 sq.ft shadow-free RCC / Tin roof area
   const roofAreaSqFt = kw * 90;
 
   // Monthly savings = units generated * tariff (capped near the bill amount)

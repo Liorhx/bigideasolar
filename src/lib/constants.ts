@@ -32,7 +32,7 @@ export const SOLAR_BRANDS = [
       en: "Reliable • High Performance",
       hi: "भरोसेमंद • उच्च प्रदर्शन"
     },
-    priceRange: "₹60k - ₹75k / kW",
+    priceRange: "₹65k - ₹75k / kW",
     minPricePerKw: 60000,
     maxPricePerKw: 75000,
     warrantyYears: 25,
@@ -52,7 +52,7 @@ export const SOLAR_BRANDS = [
       en: "Wide Product Range • India's Largest Exporter",
       hi: "विस्तृत उत्पाद रेंज • भारत का सबसे बड़ा निर्यातक"
     },
-    priceRange: "₹55k - ₹70k / kW",
+    priceRange: "₹60k - ₹65k / kW",
     minPricePerKw: 55000,
     maxPricePerKw: 70000,
     warrantyYears: 25,
@@ -72,7 +72,7 @@ export const SOLAR_BRANDS = [
       en: "Trusted & Ultra Efficient • Heavy Duty",
       hi: "भरोसेमंद और अति-दक्ष • हैवी ड्यूटी"
     },
-    priceRange: "₹65k - ₹80k / kW",
+    priceRange: "₹60k - ₹70k / kW",
     minPricePerKw: 65000,
     maxPricePerKw: 80000,
     warrantyYears: 25,
@@ -92,7 +92,7 @@ export const SOLAR_BRANDS = [
       en: "Great Value • Advanced Tier-1 Tech",
       hi: "शानदार वैल्यू • एडवांस्ड टियर-1 तकनीक"
     },
-    priceRange: "₹55k - ₹70k / kW",
+    priceRange: "₹60k - ₹65k / kW",
     minPricePerKw: 55000,
     maxPricePerKw: 70000,
     warrantyYears: 25,
@@ -108,12 +108,12 @@ export const SOLAR_BRANDS = [
 ];
 
 export const SUBSIDY_SLABS = [
-  { capacityKw: 1, centralSubsidy: 30000, stateSubsidy: 15000, totalSubsidy: 45000 },
-  { capacityKw: 2, centralSubsidy: 60000, stateSubsidy: 30000, totalSubsidy: 90000 },
-  { capacityKw: 3, centralSubsidy: 78000, stateSubsidy: 30000, totalSubsidy: 108000 },
-  { capacityKw: 4, centralSubsidy: 78000, stateSubsidy: 30000, totalSubsidy: 108000 },
-  { capacityKw: 5, centralSubsidy: 78000, stateSubsidy: 30000, totalSubsidy: 108000 },
-  { capacityKw: 10, centralSubsidy: 78000, stateSubsidy: 30000, totalSubsidy: 108000 }
+  { capacityKw: 1, centralSubsidy: 0, stateSubsidy: 0, totalSubsidy: 0, label: "No subsidy provided" },
+  { capacityKw: 2, centralSubsidy: 60000, stateSubsidy: 30000, totalSubsidy: 90000, label: "₹90,000 Subsidy" },
+  { capacityKw: 3, centralSubsidy: 78000, stateSubsidy: 30000, totalSubsidy: 108000, label: "₹1,08,000 Subsidy" },
+  { capacityKw: 4, centralSubsidy: 78000, stateSubsidy: 30000, totalSubsidy: 108000, label: "₹1,08,000 Subsidy" },
+  { capacityKw: 5, centralSubsidy: 78000, stateSubsidy: 30000, totalSubsidy: 108000, label: "₹1,08,000 Subsidy" },
+  { capacityKw: 10, centralSubsidy: 78000, stateSubsidy: 30000, totalSubsidy: 108000, label: "₹1,08,000 Subsidy" }
 ];
 
 export const CONTACT_INFO = {

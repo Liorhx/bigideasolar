@@ -4,27 +4,24 @@ import React, { useState } from "react";
 import confetti from "canvas-confetti";
 import { useLanguage } from "@/context/LanguageContext";
 import { calculateSolar, SolarCalculationResult } from "@/lib/solar-calc";
-import { SOLAR_BRANDS, LUCKNOW_AREAS, CONTACT_INFO } from "@/lib/constants";
+import { LUCKNOW_AREAS, CONTACT_INFO } from "@/lib/constants";
 import {
-  Zap,
   Home,
-  Building2,
-  Building,
-  CheckCircle,
-  Sparkles,
-  ArrowRight,
-  ArrowLeft,
   Gift,
   Copy,
   Check,
   MessageSquare,
-  ShieldCheck,
-  Sun,
   IndianRupee,
   User,
   Phone,
   MapPin,
-  Lock
+  Lock,
+  ArrowLeft,
+  ChevronDown,
+  ChevronUp,
+  Award,
+  Sparkles,
+  Zap
 } from "lucide-react";
 
 export default function SolarCalculator() {
@@ -55,15 +52,17 @@ export default function SolarCalculator() {
   const [formError, setFormError] = useState("");
 
   const billOptions = [
-    { label: "₹1,000 - ₹2,000", value: 1500 },
-    { label: "₹2,000 - ₹3,000", value: 2500 },
-    { label: "₹3,000 - ₹5,000", value: 4000 },
-    { label: "₹5,000+", value: 6500 }
+    { label: "₹800 - ₹1,500", value: 1200, size: "1 kW", subsidy: "No subsidy provided" },
+    { label: "₹1,500 - ₹2,500", value: 2000, size: "2 kW", subsidy: "₹90,000 Subsidy" },
+    { label: "₹2,500 - ₹4,000", value: 3200, size: "3 kW", subsidy: "₹1,08,000 Subsidy" },
+    { label: "₹4,000+", value: 5500, size: ">3 kW", subsidy: "₹1,08,000 Max" }
   ];
 
   const handleBillSelect = (label: string, numeric: number) => {
     setBillRange(label);
     setBillNumeric(numeric);
+    const result = calculateSolar(numeric);
+    setCalcResult(result);
   };
 
   const handleCalculateStep1 = () => {
@@ -123,7 +122,7 @@ export default function SolarCalculator() {
           propertyType,
           hasRooftop,
           preferredBrand: selectedBrand,
-          source: "Website",
+          source: "Website Calculator",
           estimatedCost: calcResult.costMax,
           netCost: calcResult.netCostMax,
           subsidy: calcResult.totalSubsidy
@@ -164,14 +163,30 @@ export default function SolarCalculator() {
 
   const whatsappLeadMessage = encodeURIComponent(
     language === "hi"
-      ? `नमस्ते! मैंने BigIdeaSolar (बिग आइडिया सोलर) वेबसाइट पर ₹${billNumeric}/महीने बिल के लिए ${calcResult.recommendedKw}kW सोलर का एस्टीमेट निकाला है।\n\nमेरा कूपन कोड: ${generatedCoupon} (2% छूट)\nनाम: ${fullName || "ग्राहक"}\nइलाका: ${area}\nपसंदीदा ब्रांड: ${selectedBrand}\n\nकृपया मुझे पीएम सूर्य घर सब्सिडी का कोटेशन भेजें।`
-      : `Hello! I generated an estimate on BigIdeaSolar for a ${calcResult.recommendedKw}kW Solar System (${billRange} Bill).\n\nMy Coupon: ${generatedCoupon} (2% Off)\nName: ${fullName || "Customer"}\nArea: ${area}\nBrand: ${selectedBrand}\n\nPlease send my quotation with PM Surya Ghar subsidy details.`
+      ? `नमस्ते! मैंने BigIdeaSolar वेबसाइट पर ₹${billNumeric}/महीने बिल के लिए ${calcResult.recommendedKw}kW सोलर का एस्टीमेट निकाला है।\n\nसब्सिडी स्थिति: ${
+          calcResult.totalSubsidy > 0
+            ? `कुल सब्सिडी ₹${calcResult.totalSubsidy.toLocaleString("en-IN")} (केंद्रीय: ₹${calcResult.centralSubsidy.toLocaleString("en-IN")} + यूपी: ₹${calcResult.stateSubsidy.toLocaleString("en-IN")})`
+            : "No subsidy provided (1 kW)"
+        }\nमेरा कूपन कोड: ${generatedCoupon} (2% छूट)\nनाम: ${fullName || "ग्राहक"}\nइलाका: ${area}\nपसंदीदा ब्रांड: ${selectedBrand}\n\nकृपया मुझे फाइनल कोटेशन भेजें।`
+      : `Hello! I generated an estimate on BigIdeaSolar for a ${calcResult.recommendedKw}kW Solar System (${billRange} Bill).\n\nSubsidy Status: ${
+          calcResult.totalSubsidy > 0
+            ? `Total Subsidy ₹${calcResult.totalSubsidy.toLocaleString("en-IN")} (Central: ₹${calcResult.centralSubsidy.toLocaleString("en-IN")} + UP State: ₹${calcResult.stateSubsidy.toLocaleString("en-IN")})`
+            : "No subsidy provided (1 kW)"
+        }\nMy Coupon: ${generatedCoupon} (2% Off)\nName: ${fullName || "Customer"}\nArea: ${area}\nBrand: ${selectedBrand}\n\nPlease send my official quotation with equipment specifications.`
   );
+
+  // Subsidy Slab matrix data with 1 kW explicitly marked "No subsidy provided"
+  const subsidyTableRows = [
+    { size: "1 kW", central: "No subsidy provided", state: "No subsidy provided", total: "No subsidy provided", kw: 1 },
+    { size: "2 kW", central: "₹60,000", state: "₹30,000", total: "₹90,000", kw: 2 },
+    { size: "3 kW", central: "₹78,000", state: "₹30,000*", total: "₹1,08,000", kw: 3 },
+    { size: ">3 kW", central: "₹78,000", state: "₹30,000*", total: "₹1,08,000", kw: 4 }
+  ];
 
   return (
     <section id="calculator" className="py-6 sm:py-12 bg-slate-50 relative">
       <div className="max-w-xl mx-auto px-3 sm:px-6">
-        {/* Step Container Card (Matching Screens 2, 3, 4, 5) */}
+        {/* Step Container Card */}
         <div className="bg-white rounded-2xl sm:rounded-3xl shadow-md border border-slate-200 overflow-hidden">
           {/* Card Top Title Bar */}
           <div className="bg-white border-b border-slate-100 px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between">
@@ -179,7 +194,7 @@ export default function SolarCalculator() {
               {step > 1 && step < 4 && (
                 <button
                   onClick={() => setStep((prev) => ((prev - 1) as 1 | 2 | 3))}
-                  className="p-1 -ml-1 text-slate-600 hover:text-slate-900 rounded-lg"
+                  className="p-1 -ml-1 text-slate-600 hover:text-slate-900 rounded-lg cursor-pointer"
                   aria-label="Back"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -187,51 +202,78 @@ export default function SolarCalculator() {
               )}
               <div>
                 <h2 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
-                  {step === 1 && (language === "hi" ? "सोलर कॉस्ट कैलकुलेटर" : "Solar Cost Calculator")}
-                  {step === 2 && (language === "hi" ? "आपका अनुमानित सोलर बजट" : "Your Estimated Solar Specs")}
+                  {step === 1 && (language === "hi" ? "सोलर कॉस्ट व सब्सिडी कैलकुलेटर" : "Solar Cost & Subsidy Calculator")}
+                  {step === 2 && (language === "hi" ? "आपका सोलर बजट व सब्सिडी विवरण" : "Your Solar Budget & Subsidy Breakdown")}
                   {step === 3 && (language === "hi" ? "फ्री सोलर कोटेशन और 2% कूपन" : "Get Free Quote & 2% Coupon")}
                   {step === 4 && (language === "hi" ? "बधाई हो! आपका डिस्काउंट कूपन" : "Congratulations!")}
                 </h2>
                 <p className="text-[11px] text-slate-500">
-                  {step === 1 && (language === "hi" ? "पता करें आपके घर के लिए approximate solar budget" : "Pata karein aapke ghar ke liye approximate solar budget")}
-                  {step === 2 && (language === "hi" ? "अनुशंसित क्षमता और ब्रांड चयन" : "Recommended size & preferred brand")}
-                  {step === 3 && (language === "hi" ? "कूपन कोड तुरंत पाने के लिए फॉर्म भरें" : "Fill details & get a unique coupon code instantly")}
+                  {step === 1 && (language === "hi" ? "1 kW (No subsidy) से लेकर 10 kW तक यूपी सरकार + केंद्र सब्सिडी जानें" : "Calculate accurate 1 kW to 10 kW budget with Central + UP State subsidies")}
+                  {step === 2 && (language === "hi" ? "अनुशंसित क्षमता और ब्रांड चयन" : "Recommended capacity, subsidy slabs & brand selection")}
+                  {step === 3 && (language === "hi" ? "कूपन कोड तुरंत पाने के लिए फॉर्म भरें" : "Fill details & get your unique coupon code instantly")}
                   {step === 4 && (language === "hi" ? "आपका सोलर डिस्काउंट कूपन एक्टिव है" : "Your Solar Discount Coupon is ready")}
                 </p>
               </div>
             </div>
 
-            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
+            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 shrink-0">
               Step {step}/4
             </span>
           </div>
 
-          <div className="p-4 sm:p-6">
+          <div className="p-4 sm:p-6 space-y-5">
             {/* ======================================================== */}
-            {/* SCREEN 2: Questionnaire (Matching Screen 2 of Mockup) */}
+            {/* STEP 1: Questionnaire with 1 kW Support + Subsidy Slab Matrix */}
             {/* ======================================================== */}
             {step === 1 && (
               <div className="space-y-5 animate-in fade-in duration-200">
                 {/* 1. Monthly Electricity Bill */}
                 <div className="space-y-2">
-                  <label className="text-xs sm:text-sm font-extrabold text-slate-800 block">
-                    {language === "hi" ? "1. आपका मासिक बिजली बिल (औसत)?" : "1. Aapka monthly electricity bill (average)"}
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs sm:text-sm font-extrabold text-slate-800 block">
+                      {language === "hi" ? "1. आपका मासिक बिजली बिल (औसत)?" : "1. What is your average monthly electricity bill?"}
+                    </label>
+                    <span className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                      1 kW = No subsidy provided
+                    </span>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-2">
                     {billOptions.map((opt) => {
                       const isSelected = billRange === opt.label;
+                      const isNoSubsidy = opt.size === "1 kW";
                       return (
                         <button
                           key={opt.label}
                           type="button"
                           onClick={() => handleBillSelect(opt.label, opt.value)}
-                          className={`py-2.5 px-3 rounded-xl font-bold text-xs border transition-all text-center ${
+                          className={`py-2.5 px-3 rounded-xl font-bold text-xs border transition-all text-left flex flex-col justify-between cursor-pointer ${
                             isSelected
-                              ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                              ? "bg-emerald-600 text-white border-emerald-600 shadow-md ring-2 ring-emerald-500/20"
                               : "bg-slate-50 text-slate-700 border-slate-200 hover:border-emerald-300"
                           }`}
                         >
-                          {opt.label}
+                          <div className="flex items-center justify-between w-full">
+                            <span className="font-extrabold">{opt.label}</span>
+                            <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${
+                              isSelected
+                                ? "bg-white/20 text-white"
+                                : isNoSubsidy
+                                ? "bg-slate-200 text-slate-700"
+                                : "bg-emerald-100 text-emerald-800"
+                            }`}>
+                              {opt.size}
+                            </span>
+                          </div>
+                          <span className={`text-[10px] font-semibold mt-1 ${
+                            isSelected
+                              ? "text-emerald-100"
+                              : isNoSubsidy
+                              ? "text-rose-600 font-bold"
+                              : "text-slate-500"
+                          }`}>
+                            {opt.subsidy}
+                          </span>
                         </button>
                       );
                     })}
@@ -241,13 +283,13 @@ export default function SolarCalculator() {
                 {/* 2. Property Type */}
                 <div className="space-y-2">
                   <label className="text-xs sm:text-sm font-extrabold text-slate-800 block">
-                    {language === "hi" ? "2. आप किस प्रकार की प्रॉपर्टी में रहते हैं?" : "2. Aap kis type ke property mein rehte hain?"}
+                    {language === "hi" ? "2. आप किस प्रकार की प्रॉपर्टी में रहते हैं?" : "2. What type of property is this?"}
                   </label>
                   <div className="space-y-1.5">
                     {[
-                      { val: "Independent House", label: "Independent House" },
-                      { val: "Apartment", label: "Apartment" },
-                      { val: "Commercial", label: "Commercial" }
+                      { val: "Independent House", label: "Independent House / Kothi (स्वयं का मकान)" },
+                      { val: "Apartment", label: "Apartment / Flat (फ्लैट)" },
+                      { val: "Commercial", label: "Shop / Commercial (दुकान / कमर्शियल)" }
                     ].map((p) => {
                       const isSelected = propertyType === p.val;
                       return (
@@ -255,10 +297,10 @@ export default function SolarCalculator() {
                           key={p.val}
                           type="button"
                           onClick={() => setPropertyType(p.val)}
-                          className={`w-full py-2.5 px-3.5 rounded-xl border text-left text-xs font-semibold flex items-center justify-between transition-all ${
+                          className={`w-full py-2.5 px-3.5 rounded-xl border text-left text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
                             isSelected
-                              ? "bg-emerald-50/70 border-emerald-500 text-emerald-950 font-bold"
-                              : "bg-white border-slate-200 text-slate-700"
+                              ? "bg-emerald-50/80 border-emerald-500 text-emerald-950 font-bold"
+                              : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
                           }`}
                         >
                           <span>{p.label}</span>
@@ -280,13 +322,13 @@ export default function SolarCalculator() {
                 {/* 3. Rooftop Availability */}
                 <div className="space-y-2">
                   <label className="text-xs sm:text-sm font-extrabold text-slate-800 block">
-                    {language === "hi" ? "3. क्या आपके पास अपनी छत (rooftop) है?" : "3. Kya aapke paas apni chhat (rooftop) hai?"}
+                    {language === "hi" ? "3. क्या आपके पास अपनी खुली छत (rooftop) है?" : "3. Do you have your own open roof?"}
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {[
-                      { val: "Yes", label: "Yes" },
+                      { val: "Yes", label: "Yes (खुली छत है)" },
                       { val: "No", label: "No" },
-                      { val: "Not Sure", label: "Not Sure" }
+                      { val: "Not Sure", label: "Not Sure (सर्वे चाहिए)" }
                     ].map((r) => {
                       const isSelected = hasRooftop === r.val;
                       return (
@@ -294,27 +336,108 @@ export default function SolarCalculator() {
                           key={r.val}
                           type="button"
                           onClick={() => setHasRooftop(r.val)}
-                          className={`py-2 px-2 rounded-xl font-bold text-xs border transition-all text-center flex items-center justify-center gap-1 ${
+                          className={`py-2 px-2 rounded-xl font-bold text-xs border transition-all text-center flex items-center justify-center gap-1 cursor-pointer ${
                             isSelected
                               ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
                               : "bg-slate-50 text-slate-700 border-slate-200 hover:border-emerald-300"
                           }`}
                         >
                           {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
-                          <span>{r.label}</span>
+                          <span className="text-[11px]">{r.label}</span>
                         </button>
                       );
                     })}
                   </div>
                 </div>
 
+                {/* ======================================================== */}
+                {/* OFFICIAL SUBSIDY SLABS TABLE (Exact match to uploaded image) */}
+                {/* ======================================================== */}
+                <div className="bg-black text-white rounded-2xl p-4 sm:p-4.5 border border-slate-800 space-y-2.5 shadow-xl">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="text-xs font-black text-white tracking-wide uppercase">
+                        {language === "hi" ? "सरकारी सब्सिडी स्लैब (UPNEDA + केंद्र)" : "Official Solar Subsidy Slabs (UP + Central)"}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-bold text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                      100% DBT Bank Transfer
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-slate-800 text-slate-400 font-bold text-[11px]">
+                          <th className="py-2 px-2">Solar Size</th>
+                          <th className="py-2 px-2">Central Subsidy</th>
+                          <th className="py-2 px-2">UP State Subsidy</th>
+                          <th className="py-2 px-2 text-right">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-xs">
+                        {subsidyTableRows.map((row) => {
+                          const isHighlighted =
+                            (row.kw === 1 && calcResult.recommendedKw === 1) ||
+                            (row.kw === 2 && calcResult.recommendedKw === 2) ||
+                            (row.kw === 3 && calcResult.recommendedKw === 3) ||
+                            (row.kw === 4 && calcResult.recommendedKw > 3);
+
+                          return (
+                            <tr
+                              key={row.size}
+                              className={`transition-colors ${
+                                isHighlighted
+                                  ? "bg-emerald-500/20 text-emerald-300 font-black"
+                                  : "text-slate-200"
+                              }`}
+                            >
+                              <td className="py-2.5 px-2 font-bold flex items-center gap-1.5">
+                                {isHighlighted && <span className="text-[10px] text-amber-300">★</span>}
+                                <span>{row.size}</span>
+                              </td>
+                              <td className="py-2.5 px-2 font-mono">
+                                {row.central === "No subsidy provided" ? (
+                                  <span className="text-slate-400 italic text-[11px]">No subsidy provided</span>
+                                ) : (
+                                  row.central
+                                )}
+                              </td>
+                              <td className="py-2.5 px-2 font-mono">
+                                {row.state === "No subsidy provided" ? (
+                                  <span className="text-slate-400 italic text-[11px]">No subsidy provided</span>
+                                ) : (
+                                  row.state
+                                )}
+                              </td>
+                              <td className="py-2.5 px-2 text-right font-mono font-black">
+                                {row.total === "No subsidy provided" ? (
+                                  <span className="text-slate-400 italic font-normal text-[11px]">No subsidy provided</span>
+                                ) : (
+                                  <span className="text-amber-300">{row.total}</span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <p className="text-[10px] text-slate-400 leading-tight pt-1 border-t border-slate-800/80">
+                    *Subsidy is applicable for 2 kW and above systems under PM Surya Ghar & UPNEDA schemes. 1 kW system has no subsidy provided.
+                  </p>
+                </div>
+
                 {/* Calculate CTA Button */}
-                <div className="pt-2">
+                <div className="pt-1">
                   <button
                     type="button"
                     onClick={handleCalculateStep1}
-                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
+                    <Zap className="w-4 h-4 fill-white" />
                     <span>{t.calculator.calcAction}</span>
                   </button>
                 </div>
@@ -322,61 +445,163 @@ export default function SolarCalculator() {
             )}
 
             {/* ======================================================== */}
-            {/* SCREEN 3: Estimated Budget & Brand (Screen 3 Mockup) */}
+            {/* STEP 2: Estimated Budget & Subsidy Breakdown */}
             {/* ======================================================== */}
             {step === 2 && (
               <div className="space-y-4 animate-in fade-in duration-200">
-                {/* Result Specs Box (Matching Screen 3 Green Framed Box) */}
-                <div className="rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/40 p-4 space-y-3">
-                  {/* Recommended Size with House Icon */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                      <Home className="w-5 h-5" />
+                {/* Result Specs Box */}
+                <div className="rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/50 p-4.5 space-y-3.5">
+                  {/* Recommended Size & Badge */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <Home className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold uppercase text-emerald-800 tracking-wide block">
+                          {t.calculator.recommendedSize}
+                        </span>
+                        <p className="text-2xl font-black text-slate-900 leading-tight">
+                          {calcResult.recommendedKw} kW Rooftop Solar
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-[10px] font-bold uppercase text-emerald-800 tracking-wide block">
-                        {t.calculator.recommendedSize}
-                      </span>
-                      <p className="text-xl font-black text-slate-900 leading-tight">
-                        {calcResult.recommendedKw} kW
-                      </p>
-                    </div>
+                    <span className={`text-[11px] font-black px-2.5 py-1 rounded-full shadow-xs ${
+                      calcResult.totalSubsidy > 0
+                        ? "text-white bg-emerald-700"
+                        : "text-slate-800 bg-slate-200"
+                    }`}>
+                      {calcResult.totalSubsidy > 0
+                        ? `₹${calcResult.totalSubsidy.toLocaleString("en-IN")} Total Subsidy`
+                        : "No subsidy provided"}
+                    </span>
                   </div>
 
-                  <div className="border-t border-emerald-200/60 pt-2.5 space-y-1.5 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-600 font-medium">Indicative System Cost:</span>
-                      <span className="font-extrabold text-slate-900">
+                  {/* Financial Breakdown */}
+                  <div className="border-t border-emerald-200/70 pt-3 space-y-2 text-xs">
+                    <div className="flex items-center justify-between text-slate-600">
+                      <span className="font-medium">Indicative System Cost (Market Price):</span>
+                      <span className="font-bold text-slate-800">
                         ₹{calcResult.costMin.toLocaleString("en-IN")} - ₹{calcResult.costMax.toLocaleString("en-IN")}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-emerald-800 font-bold">After Estimated Subsidy*:</span>
-                      <span className="font-black text-emerald-700 text-sm">
-                        ₹{calcResult.netCostMin.toLocaleString("en-IN")} - ₹{calcResult.netCostMax.toLocaleString("en-IN")}*
+                    <div className="flex items-center justify-between text-slate-700">
+                      <span>Central Govt Subsidy (PM Surya Ghar):</span>
+                      <span className={`font-bold font-mono ${calcResult.centralSubsidy > 0 ? "text-emerald-700" : "text-slate-500 italic"}`}>
+                        {calcResult.centralSubsidy > 0 ? `- ₹${calcResult.centralSubsidy.toLocaleString("en-IN")}` : "No subsidy provided"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-slate-700">
+                      <span>UP State Govt Subsidy (UPNEDA):</span>
+                      <span className={`font-bold font-mono ${calcResult.stateSubsidy > 0 ? "text-emerald-700" : "text-slate-500 italic"}`}>
+                        {calcResult.stateSubsidy > 0 ? `- ₹${calcResult.stateSubsidy.toLocaleString("en-IN")}` : "No subsidy provided"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between bg-emerald-600/10 p-2 rounded-xl border border-emerald-500/30">
+                      <span className="text-emerald-950 font-black">
+                        {calcResult.totalSubsidy > 0 ? "Net Cost After Both Subsidies*:" : "Estimated System Price (No Subsidy):"}
+                      </span>
+                      <span className="font-black text-emerald-800 text-base font-mono">
+                        ₹{calcResult.netCostMin.toLocaleString("en-IN")} - ₹{calcResult.netCostMax.toLocaleString("en-IN")}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-600 pt-0.5">
+                      <span>Expected Monthly Bill Savings:</span>
+                      <span className="font-extrabold text-slate-900">
+                        ₹{calcResult.monthlySavings.toLocaleString("en-IN")}/month (₹{calcResult.yearlySavings.toLocaleString("en-IN")}/yr)
                       </span>
                     </div>
                   </div>
-
-                  <p className="text-[10px] text-slate-500 leading-tight pt-1 border-t border-emerald-200/60">
-                    *Subsidy is subject to government scheme eligibility, approved equipment and installation requirements.
-                  </p>
                 </div>
 
-                {/* Brand Selector 2x2 Grid (Matching Screen 3 Mockup) */}
-                <div className="space-y-2">
+                {/* Exact Subsidy Table in Step 2 */}
+                <div className="bg-black text-white rounded-2xl p-4 border border-slate-800 space-y-2 shadow-md">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-black uppercase tracking-wide text-white">
+                      Official Subsidy Breakdown Table
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-400">
+                      ★ Active: {calcResult.recommendedKw} kW
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-slate-800 text-slate-400 font-bold text-[11px]">
+                          <th className="py-2 px-2">Solar Size</th>
+                          <th className="py-2 px-2">Central Subsidy</th>
+                          <th className="py-2 px-2">UP State Subsidy</th>
+                          <th className="py-2 px-2 text-right">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-xs">
+                        {subsidyTableRows.map((row) => {
+                          const isHighlighted =
+                            (row.kw === 1 && calcResult.recommendedKw === 1) ||
+                            (row.kw === 2 && calcResult.recommendedKw === 2) ||
+                            (row.kw === 3 && calcResult.recommendedKw === 3) ||
+                            (row.kw === 4 && calcResult.recommendedKw > 3);
+
+                          return (
+                            <tr
+                              key={row.size}
+                              className={`transition-colors ${
+                                isHighlighted
+                                  ? "bg-emerald-500/20 text-emerald-300 font-black"
+                                  : "text-slate-200"
+                              }`}
+                            >
+                              <td className="py-2 px-2 font-bold flex items-center gap-1.5">
+                                {isHighlighted && <span className="text-[10px] text-amber-300">★</span>}
+                                <span>{row.size}</span>
+                              </td>
+                              <td className="py-2.5 px-2 font-mono">
+                                {row.central === "No subsidy provided" ? (
+                                  <span className="text-slate-400 italic text-[11px]">No subsidy provided</span>
+                                ) : (
+                                  row.central
+                                )}
+                              </td>
+                              <td className="py-2.5 px-2 font-mono">
+                                {row.state === "No subsidy provided" ? (
+                                  <span className="text-slate-400 italic text-[11px]">No subsidy provided</span>
+                                ) : (
+                                  row.state
+                                )}
+                              </td>
+                              <td className="py-2.5 px-2 text-right font-mono font-black">
+                                {row.total === "No subsidy provided" ? (
+                                  <span className="text-slate-400 italic font-normal text-[11px]">No subsidy provided</span>
+                                ) : (
+                                  <span className="text-amber-300">{row.total}</span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Brand Selector 2x2 Grid */}
+                <div className="space-y-2 pt-1">
                   <label className="text-xs font-extrabold text-slate-800 block">
-                    {language === "hi" ? "पसंदीदा ब्रांड चुनें" : "Select Preferred Brand"}
+                    {language === "hi" ? "पसंदीदा सोलर ब्रांड चुनें" : "Select Preferred Brand"}
                   </label>
 
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { id: "tata", name: "TATA POWER SOLAR", color: "text-sky-700" },
-                      { id: "waaree", name: "Waaree", color: "text-emerald-700" },
-                      { id: "adani", name: "Adani Solar", color: "text-blue-700" },
-                      { id: "vikram", name: "Vikram Solar", color: "text-amber-700" },
-                      { id: "other", name: "Other", color: "text-slate-700" }
+                      { id: "tata", name: "TATA POWER SOLAR" },
+                      { id: "waaree", name: "Waaree Solar" },
+                      { id: "adani", name: "Adani Solar" },
+                      { id: "vikram", name: "Vikram Solar" },
+                      { id: "other", name: "Other / Let Expert Suggest" }
                     ].map((b) => {
                       const isSelected = selectedBrand === b.name;
                       return (
@@ -384,14 +609,14 @@ export default function SolarCalculator() {
                           key={b.id}
                           type="button"
                           onClick={() => setSelectedBrand(b.name)}
-                          className={`py-2.5 px-3 rounded-xl border text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5 ${
+                          className={`py-2.5 px-3 rounded-xl border text-xs font-bold text-center transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                             isSelected
                               ? "bg-emerald-50 border-emerald-600 text-emerald-950 shadow-xs ring-1 ring-emerald-500"
                               : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
                           } ${b.id === "other" ? "col-span-2" : ""}`}
                         >
                           <div
-                            className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${
+                            className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
                               isSelected ? "border-emerald-600 bg-emerald-600 text-white" : "border-slate-300"
                             }`}
                           >
@@ -409,7 +634,7 @@ export default function SolarCalculator() {
                   <button
                     type="button"
                     onClick={handleProceedToForm}
-                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <span>{t.calculator.proceedDiscount}</span>
                   </button>
@@ -418,7 +643,7 @@ export default function SolarCalculator() {
             )}
 
             {/* ======================================================== */}
-            {/* SCREEN 4: Lead Form & Coupon (Screen 4 Mockup) */}
+            {/* STEP 3: Lead Form & Coupon Request */}
             {/* ======================================================== */}
             {step === 3 && (
               <form onSubmit={handleSubmitLead} className="space-y-3.5 animate-in fade-in duration-200">
@@ -427,8 +652,8 @@ export default function SolarCalculator() {
                   <Gift className="w-5 h-5 text-amber-600 shrink-0" />
                   <p className="text-xs font-bold leading-tight">
                     {language === "hi"
-                      ? "विवरण भरें और अपना 2% डिस्काउंट कूपन तुरंत पाएं"
-                      : "Fill in your details and get a unique coupon code instantly."}
+                      ? `विवरण भरें और ${calcResult.recommendedKw}kW सोलर पर अपना 2% डिस्काउंट कूपन तुरंत पाएं`
+                      : `Fill in your details to activate your 2% extra discount coupon on ${calcResult.recommendedKw}kW solar.`}
                   </p>
                 </div>
 
@@ -487,7 +712,7 @@ export default function SolarCalculator() {
                     <select
                       value={area}
                       onChange={(e) => setArea(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm font-medium outline-none focus:border-emerald-600 text-slate-900 bg-white appearance-none"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm font-medium outline-none focus:border-emerald-600 text-slate-900 bg-white appearance-none cursor-pointer"
                     >
                       {LUCKNOW_AREAS.map((a) => (
                         <option key={a} value={a}>
@@ -507,7 +732,7 @@ export default function SolarCalculator() {
                     <button
                       type="button"
                       onClick={() => setIsOwner("Yes")}
-                      className={`py-2 rounded-xl font-bold text-xs border transition-all ${
+                      className={`py-2 rounded-xl font-bold text-xs border transition-all cursor-pointer ${
                         isOwner === "Yes"
                           ? "bg-emerald-600 text-white border-emerald-600"
                           : "bg-slate-50 text-slate-700 border-slate-200"
@@ -518,7 +743,7 @@ export default function SolarCalculator() {
                     <button
                       type="button"
                       onClick={() => setIsOwner("No")}
-                      className={`py-2 rounded-xl font-bold text-xs border transition-all ${
+                      className={`py-2 rounded-xl font-bold text-xs border transition-all cursor-pointer ${
                         isOwner === "No"
                           ? "bg-emerald-600 text-white border-emerald-600"
                           : "bg-slate-50 text-slate-700 border-slate-200"
@@ -539,7 +764,7 @@ export default function SolarCalculator() {
                     className="mt-0.5 w-3.5 h-3.5 text-emerald-600 rounded"
                   />
                   <label htmlFor="consent-calc" className="text-[11px] text-slate-600 leading-tight cursor-pointer">
-                    I agree to the Terms & Conditions and Privacy Policy
+                    I agree to receive my solar quotation & free survey details on WhatsApp / Call.
                   </label>
                 </div>
 
@@ -548,14 +773,14 @@ export default function SolarCalculator() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 disabled:opacity-70"
+                    className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-1.5 disabled:opacity-70 cursor-pointer"
                   >
                     {isSubmitting ? (
                       <span>Generating Coupon...</span>
                     ) : (
                       <>
                         <Gift className="w-4 h-4" />
-                        <span>Get My Free Coupon →</span>
+                        <span>Get My 2% Discount Coupon →</span>
                       </>
                     )}
                   </button>
@@ -563,13 +788,13 @@ export default function SolarCalculator() {
 
                 <p className="text-[10px] text-slate-400 text-center flex items-center justify-center gap-1">
                   <Lock className="w-3 h-3 text-slate-400" />
-                  <span>Your information is secure and will only be used for your enquiry.</span>
+                  <span>Your information is secure and will only be used for your solar enquiry.</span>
                 </p>
               </form>
             )}
 
             {/* ======================================================== */}
-            {/* SCREEN 5: Coupon Success Voucher (Screen 5 Mockup) */}
+            {/* STEP 4: Coupon Success Voucher */}
             {/* ======================================================== */}
             {step === 4 && (
               <div className="space-y-4 text-center animate-in zoom-in-95 duration-200">
@@ -587,16 +812,18 @@ export default function SolarCalculator() {
                   </p>
                 </div>
 
-                {/* Green Coupon Code Pill (Matching Screen 5 Mockup) */}
+                {/* Green Coupon Code Pill */}
                 <div className="rounded-2xl bg-emerald-600 text-white p-4 space-y-1.5 shadow-md">
                   <div className="bg-white/15 backdrop-blur-xs rounded-xl py-2 px-3 font-mono font-black text-xl tracking-wider text-amber-300">
                     {generatedCoupon}
                   </div>
                   <p className="text-xs font-black uppercase text-white">
-                    2% OFF
+                    2% FLAT OFF • {calcResult.recommendedKw} kW System
                   </p>
                   <p className="text-[10px] text-emerald-100">
-                    Valid for your solar installation quotation
+                    {calcResult.totalSubsidy > 0
+                      ? `Total Subsidy: ₹${calcResult.totalSubsidy.toLocaleString("en-IN")} (Central ₹${calcResult.centralSubsidy.toLocaleString("en-IN")} + UP State ₹${calcResult.stateSubsidy.toLocaleString("en-IN")})`
+                      : "1 kW Standard System (No subsidy provided)"}
                   </p>
                 </div>
 
@@ -604,7 +831,7 @@ export default function SolarCalculator() {
                 <button
                   type="button"
                   onClick={copyCouponCode}
-                  className="w-full py-2.5 px-4 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 px-4 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   {copied ? (
                     <>
@@ -619,7 +846,7 @@ export default function SolarCalculator() {
                   )}
                 </button>
 
-                {/* WhatsApp Direct Action (Matching Screen 5 Mockup) */}
+                {/* WhatsApp Direct Action */}
                 <div className="space-y-2 pt-1">
                   <a
                     href={`https://wa.me/${CONTACT_INFO.whatsappNumber}?text=${whatsappLeadMessage}`}
@@ -632,15 +859,15 @@ export default function SolarCalculator() {
                   </a>
 
                   <p className="text-[10px] text-slate-500">
-                    Our solar expert will contact you shortly.
+                    Our solar expert will assist you with free rooftop survey and equipment quotation.
                   </p>
 
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="text-xs text-slate-500 hover:text-slate-800 font-semibold underline pt-1 block mx-auto"
+                    className="text-xs text-slate-500 hover:text-slate-800 font-semibold underline pt-1 block mx-auto cursor-pointer"
                   >
-                    Back to Home
+                    Back to Calculator
                   </button>
                 </div>
               </div>
