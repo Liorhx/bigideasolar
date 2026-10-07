@@ -30,7 +30,7 @@ export default function WhySolarSection() {
       title: language === "hi" ? "सरकारी सब्सिडी (DBT)" : "Government Subsidy",
       desc:
         language === "hi"
-          ? "पीएम सूर्य घर योजना के तहत ₹78,000 तक सीधी बैंक सब्सिडी पाएं।"
+          ? "पीएम सूर्य घर योजना के तहत ₹108,000 तक सीधी बैंक सब्सिडी पाएं।"
           : "Eligible residential customers may receive subsidy under PM Surya Ghar."
     },
     {

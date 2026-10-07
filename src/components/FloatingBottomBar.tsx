@@ -10,8 +10,8 @@ export default function FloatingBottomBar() {
 
   const whatsappMsg = encodeURIComponent(
     language === "hi"
-      ? "नमस्ते! मुझे लखनऊ में रूफटॉप सोलर और ₹78,000 सरकारी सब्सिडी की जानकारी चाहिए।"
-      : "Hello! I would like details regarding rooftop solar installation and ₹78,000 PM Surya Ghar subsidy in Lucknow."
+      ? "नमस्ते! मुझे लखनऊ में रूफटॉप सोलर और ₹108,000 सरकारी सब्सिडी की जानकारी चाहिए।"
+      : "Hello! I would like details regarding rooftop solar installation and ₹108,000 PM Surya Ghar subsidy in Lucknow."
   );
 
   return (

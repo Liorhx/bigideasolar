@@ -20,9 +20,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "BigIdeaSolar - Rooftop Solar Installation & PM Surya Ghar Subsidy up to ₹78,000",
+  title: "BigIdeaSolar - Rooftop Solar Installation & PM Surya Ghar Subsidy up to ₹108,000",
   description:
-    "BigIdeaSolar is Lucknow's premier Rooftop Solar Platform at Kalyanpur. Install certified Tier-1 Tata, Waaree & Adani solar panels. Calculate your solar budget, claim ₹78,000 central subsidy & reduce electricity bills to zero.",
+    "BigIdeaSolar is Lucknow's premier Rooftop Solar Platform at Kalyanpur. Install certified Tier-1 Tata, Waaree & Adani solar panels. Calculate your solar budget, claim ₹108,000 subsidy & reduce electricity bills to zero.",
   icons: {
     icon: [
       { url: "/icon.png", sizes: "512x512", type: "image/png" },
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "BigIdeaSolar Team" }],
   openGraph: {
-    title: "BigIdeaSolar - Rooftop Solar & Up to ₹78,000 Govt Subsidy",
+    title: "BigIdeaSolar - Rooftop Solar & Up to ₹108,000 Govt Subsidy",
     description:
       "Get 0 electricity bill with PM Surya Ghar Muft Bijli Yojana. Instant solar cost calculation, 2% discount coupon & free rooftop survey from BigIdeaSolar.",
     type: "website",

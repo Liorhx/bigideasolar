@@ -14,10 +14,10 @@ export default function TestimonialsSection() {
       system: "3 kW Tata Solar",
       billBefore: "₹3,800",
       billAfter: "₹120",
-      subsidy: "₹78,000",
+      subsidy: "₹108,000",
       text:
         language === "hi"
-          ? "गोमती नगर में हमारी छत पर 3kW का सिस्टम लगाया गया। बिल ₹3800 से घटकर सिर्फ ₹120 रह गया और ₹78,000 की सब्सिडी 24 दिनों में बैंक खाते में आ गई।"
+          ? "गोमती नगर में हमारी छत पर 3kW का सिस्टम लगाया गया। बिल ₹3800 से घटकर सिर्फ ₹120 रह गया और ₹108,000 की सब्सिडी 24 दिनों में बैंक खाते में आ गई।"
           : "Installed a 3kW Tata Solar system in Gomti Nagar. Summer bill reduced from ₹3,800 to ₹120. ₹108,000 subsidy credited in 24 days!"
     },
     {
@@ -26,7 +26,7 @@ export default function TestimonialsSection() {
       system: "5 kW Waaree Solar",
       billBefore: "₹6,400",
       billAfter: "₹240",
-      subsidy: "₹78,000",
+      subsidy: "₹108,000",
       text:
         language === "hi"
           ? "हमारी छत पर 3 एसी दिन भर सोलर से चलते हैं। टीम ने मध्यांचल विद्युत से नेट मीटरिंग का सारा काम खुद करवाया। बेस्ट सोलर सर्विस!"
