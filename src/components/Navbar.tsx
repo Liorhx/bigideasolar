@@ -153,9 +153,9 @@ export default function Navbar() {
 
               {/* Language Switcher Prompt: Compact floating tooltip on mobile & desktop */}
               {showLanguagePopup && language === "en" && (
-                <div className="fixed top-20 left-3 right-3 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:mt-2 sm:w-80 z-[100] max-w-sm mx-auto sm:mx-0 p-2.5 sm:p-3 bg-slate-950/98 text-white rounded-2xl shadow-2xl border-2 border-amber-400 backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-200">
-                  {/* Little speech arrow pointing up to the language button */}
-                  <div className="absolute -top-2 right-28 sm:right-6 w-3.5 h-3.5 bg-slate-950 border-t-2 border-l-2 border-amber-400 rotate-45" />
+                <div className="fixed top-16 left-3 right-3 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:mt-2.5 sm:w-80 z-[100] max-w-sm mx-auto sm:mx-0 p-2.5 sm:p-3 bg-slate-950/98 text-white rounded-2xl shadow-2xl border-2 border-amber-400 backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-200">
+                  {/* Little speech arrow pointing directly up to the center of the language button */}
+                  <div className="absolute -top-2 right-[148px] sm:right-10 xl:right-16 w-3.5 h-3.5 bg-slate-950 border-t-2 border-l-2 border-amber-400 rotate-45" />
 
                   <div className="relative flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
