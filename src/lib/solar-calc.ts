@@ -18,15 +18,24 @@ export interface SolarCalculationResult {
   treesEquivalent: number;
 }
 
-export function calculateSolar(billAmount: number): SolarCalculationResult {
+export function calculateSolar(billAmount: number, forceKw?: number): SolarCalculationResult {
   // Average tariff in UP / Lucknow (UPPCL): ~₹7.5 per unit
   const tariffPerUnit = 7.5;
   const estimatedUnitsMonthly = Math.round(billAmount / tariffPerUnit);
 
-  // 1 kW solar generates approx 120-130 units per month in Lucknow (4-4.5 units/day)
-  let kw = Math.ceil(estimatedUnitsMonthly / 125);
-  if (kw < 1) kw = 1;
-  if (kw > 15) kw = 15;
+  // Determine capacity dynamically or via explicit user choice
+  let kw: number;
+  if (forceKw && forceKw >= 1) {
+    kw = forceKw;
+  } else if (billAmount <= 1500) {
+    kw = 1;
+  } else if (billAmount <= 2500) {
+    kw = 2;
+  } else if (billAmount <= 4000) {
+    kw = 3;
+  } else {
+    kw = Math.min(10, Math.max(4, Math.ceil(estimatedUnitsMonthly / 125)));
+  }
 
   // Approximate gross cost per kW before subsidy:
   // 1 kW: ₹55,000 - ₹70,000
@@ -81,15 +90,23 @@ export function calculateSolar(billAmount: number): SolarCalculationResult {
   // >3 kW: ₹78,000 + ₹30,000 = ₹1,08,000
   const totalSubsidy = centralSubsidy + stateSubsidy;
 
-  const netCostMin = Math.max(20000, costMin - totalSubsidy);
-  const netCostMax = Math.max(30000, costMax - totalSubsidy);
+  let netCostMin = 0;
+  let netCostMax = 0;
+
+  if (kw === 1) {
+    netCostMin = costMin;
+    netCostMax = costMax;
+  } else {
+    netCostMin = Math.max(30000, costMin - totalSubsidy);
+    netCostMax = Math.max(45000, costMax - totalSubsidy);
+  }
 
   // 1 kW requires ~80-100 sq.ft shadow-free RCC / Tin roof area
   const roofAreaSqFt = kw * 90;
 
-  // Monthly savings = units generated * tariff (capped near the bill amount)
+  // Monthly savings = units generated * tariff
   const unitsGeneratedMonthly = kw * 125;
-  const monthlySavings = Math.min(billAmount, Math.round(unitsGeneratedMonthly * tariffPerUnit));
+  const monthlySavings = Math.round(unitsGeneratedMonthly * tariffPerUnit);
   const yearlySavings = monthlySavings * 12;
   const savings25Years = yearlySavings * 25;
 

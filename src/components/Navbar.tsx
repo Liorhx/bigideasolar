@@ -151,41 +151,47 @@ export default function Navbar() {
                 <span className="hidden sm:inline">{t.nav.langLong}</span>
               </button>
 
-              {/* Language Switcher Prompt: Fixed Bottom Toast on Mobile, Dropdown on Desktop */}
+              {/* Language Switcher Prompt: Compact floating tooltip on mobile & desktop */}
               {showLanguagePopup && language === "en" && (
-                <div className="fixed bottom-20 left-3 right-3 sm:left-auto sm:right-0 sm:top-full sm:bottom-auto sm:mt-2 sm:w-80 z-50 max-w-md mx-auto sm:mx-0 p-3.5 sm:p-4 bg-slate-950/95 sm:bg-slate-900 text-white rounded-2xl shadow-2xl border-2 border-amber-400 backdrop-blur-md animate-in fade-in slide-in-from-bottom-3 sm:slide-in-from-top-2 duration-200">
-                  {/* Speech arrow on desktop */}
-                  <div className="hidden sm:block absolute -top-1.5 right-6 w-3 h-3 bg-slate-900 border-t border-l border-amber-400 rotate-45" />
+                <div className="fixed top-20 left-3 right-3 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:mt-2 sm:w-80 z-[100] max-w-sm mx-auto sm:mx-0 p-2.5 sm:p-3 bg-slate-950/98 text-white rounded-2xl shadow-2xl border-2 border-amber-400 backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-200">
+                  {/* Little speech arrow pointing up to the language button */}
+                  <div className="absolute -top-2 right-28 sm:right-6 w-3.5 h-3.5 bg-slate-950 border-t-2 border-l-2 border-amber-400 rotate-45" />
 
-                  <div className="relative flex items-start justify-between gap-2.5">
-                    <div className="space-y-1.5 flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 text-amber-300 text-xs font-black">
-                        <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                        <span>आसान हिंदी में पढ़ें (Read in Hindi)</span>
+                  <div className="relative flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-lg shrink-0">🇮🇳</span>
+                      <div className="min-w-0">
+                        <p className="text-xs font-black text-amber-300 leading-tight truncate">
+                          हिंदी में पढ़ना चाहते हैं?
+                        </p>
+                        <p className="text-[10px] text-slate-300 leading-tight mt-0.5 truncate">
+                          1-क्लिक में पूरी वेबसाइट हिंदी करें
+                        </p>
                       </div>
-                      <p className="text-xs text-slate-200 leading-snug font-medium break-words">
-                        यहाँ क्लिक करके पूरी जानकारी अपनी भाषा <b>हिंदी</b> में तुरंत पढ़ें।
-                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         type="button"
                         onClick={handleToggle}
-                        className="mt-1 px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black rounded-xl inline-flex items-center gap-1 transition-colors shadow-md shadow-amber-400/20 active:scale-95"
+                        className="px-2.5 py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11px] font-black rounded-xl transition-all shadow-xs active:scale-95 whitespace-nowrap cursor-pointer flex items-center gap-0.5"
                       >
-                        <span>हाँ, हिंदी में बदलें →</span>
+                        <span>बदलें</span>
+                        <span>→</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowLanguagePopup(false);
+                          sessionStorage.setItem("seen_lang_prompt", "true");
+                        }}
+                        className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+                        aria-label="Close prompt"
+                      >
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowLanguagePopup(false);
-                        sessionStorage.setItem("seen_lang_prompt", "true");
-                      }}
-                      className="text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800 hover:bg-slate-700 shrink-0"
-                      aria-label="Close prompt"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
                   </div>
                 </div>
               )}

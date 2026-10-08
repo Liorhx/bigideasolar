@@ -31,8 +31,9 @@ export default function SolarCalculator() {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   // Form selections
-  const [billRange, setBillRange] = useState<string>("₹2,000 - ₹3,000");
-  const [billNumeric, setBillNumeric] = useState<number>(2500);
+  const [billRange, setBillRange] = useState<string>("₹1,500 - ₹2,500");
+  const [billNumeric, setBillNumeric] = useState<number>(2000);
+  const [selectedKw, setSelectedKw] = useState<number>(2);
   const [propertyType, setPropertyType] = useState<string>("Independent House");
   const [hasRooftop, setHasRooftop] = useState<string>("Yes");
   const [selectedBrand, setSelectedBrand] = useState<string>("Tata Power Solar");
@@ -45,28 +46,39 @@ export default function SolarCalculator() {
   const [agreeTerms, setAgreeTerms] = useState(true);
 
   // Output results
-  const [calcResult, setCalcResult] = useState<SolarCalculationResult>(() => calculateSolar(2500));
+  const [calcResult, setCalcResult] = useState<SolarCalculationResult>(() => calculateSolar(2000, 2));
   const [generatedCoupon, setGeneratedCoupon] = useState<string>("SOLAR-8F3K2Q");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [formError, setFormError] = useState("");
 
   const billOptions = [
-    { label: "₹800 - ₹1,500", value: 1200, size: "1 kW", subsidy: "No subsidy provided" },
-    { label: "₹1,500 - ₹2,500", value: 2000, size: "2 kW", subsidy: "₹90,000 Subsidy" },
-    { label: "₹2,500 - ₹4,000", value: 3200, size: "3 kW", subsidy: "₹1,08,000 Subsidy" },
-    { label: "₹4,000+", value: 5500, size: ">3 kW", subsidy: "₹1,08,000 Max" }
+    { label: "₹800 - ₹1,500", value: 1200, size: "1 kW", subsidy: "No subsidy provided", kw: 1 },
+    { label: "₹1,500 - ₹2,500", value: 2000, size: "2 kW", subsidy: "₹90,000 Subsidy", kw: 2 },
+    { label: "₹2,500 - ₹4,000", value: 3200, size: "3 kW", subsidy: "₹1,08,000 Subsidy", kw: 3 },
+    { label: "₹4,000+", value: 5500, size: ">3 kW", subsidy: "₹1,08,000 Max", kw: 4 }
   ];
 
   const handleBillSelect = (label: string, numeric: number) => {
     setBillRange(label);
     setBillNumeric(numeric);
-    const result = calculateSolar(numeric);
+    const foundOpt = billOptions.find((o) => o.label === label || o.value === numeric);
+    const targetKw = foundOpt ? foundOpt.kw : (numeric <= 1500 ? 1 : numeric <= 2500 ? 2 : numeric <= 4000 ? 3 : 4);
+    setSelectedKw(targetKw);
+    const result = calculateSolar(numeric, targetKw);
+    setCalcResult(result);
+  };
+
+  const handleKwChange = (kw: number) => {
+    setSelectedKw(kw);
+    const result = calculateSolar(billNumeric, kw);
     setCalcResult(result);
   };
 
   const handleCalculateStep1 = () => {
-    const result = calculateSolar(billNumeric);
+    const foundOpt = billOptions.find((o) => o.label === billRange || o.value === billNumeric);
+    const targetKw = foundOpt ? foundOpt.kw : (selectedKw || 2);
+    const result = calculateSolar(billNumeric, targetKw);
     setCalcResult(result);
     setStep(2);
     const el = document.getElementById("calculator");
@@ -448,90 +460,139 @@ export default function SolarCalculator() {
             {/* ======================================================== */}
             {step === 2 && (
               <div className="space-y-4 animate-in fade-in duration-200">
+                {/* Interactive Solar Size Selector Tabs */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-1">
+                    <label className="text-xs font-black text-slate-800 uppercase tracking-wide">
+                      {language === "hi" ? "सोलर क्षमता चुनें / बदलें:" : "Solar System Size:"}
+                    </label>
+                    <span className="text-[10px] text-slate-500 font-semibold truncate">
+                      {billRange}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                    {[
+                      { kw: 1, label: "1 kW", sub: "No Subsidy" },
+                      { kw: 2, label: "2 kW", sub: "₹90k Sub." },
+                      { kw: 3, label: "3 kW", sub: "₹1.08L Sub." },
+                      { kw: 4, label: ">3 kW", sub: "₹1.08L Sub." }
+                    ].map((tab) => {
+                      const isSelected = calcResult.recommendedKw === tab.kw || (tab.kw === 4 && calcResult.recommendedKw >= 4);
+                      return (
+                        <button
+                          key={tab.kw}
+                          type="button"
+                          onClick={() => handleKwChange(tab.kw)}
+                          className={`py-2 px-1 rounded-xl border text-center font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+                            isSelected
+                              ? "bg-emerald-600 text-white border-emerald-600 shadow-md ring-2 ring-emerald-500/20 font-black"
+                              : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                          }`}
+                        >
+                          <div className="font-extrabold">{tab.label}</div>
+                          <div
+                            className={`text-[9px] sm:text-[10px] mt-0.5 leading-tight ${
+                              isSelected
+                                ? "text-emerald-100"
+                                : tab.kw === 1
+                                ? "text-amber-700 font-semibold"
+                                : "text-emerald-700 font-semibold"
+                            }`}
+                          >
+                            {tab.sub}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Result Specs Box */}
-                <div className="rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/50 p-4.5 space-y-3.5">
+                <div className="rounded-2xl border-2 border-emerald-500/30 bg-emerald-50/50 p-3.5 sm:p-4.5 space-y-3.5">
                   {/* Recommended Size & Badge */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
                         <Home className="w-5 h-5" />
                       </div>
-                      <div>
-                        <span className="text-[10px] font-bold uppercase text-emerald-800 tracking-wide block">
+                      <div className="min-w-0">
+                        <span className="text-[10px] font-bold uppercase text-emerald-800 tracking-wide block truncate">
                           {t.calculator.recommendedSize}
                         </span>
-                        <p className="text-2xl font-black text-slate-900 leading-tight">
-                          {calcResult.recommendedKw} kW Rooftop Solar
+                        <p className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
+                          {calcResult.recommendedKw >= 4 ? ">3 kW" : `${calcResult.recommendedKw} kW`} Rooftop Solar
                         </p>
                       </div>
                     </div>
-                    <span className={`text-[11px] font-black px-2.5 py-1 rounded-full shadow-xs ${
-                      calcResult.totalSubsidy > 0
-                        ? "text-white bg-emerald-700"
-                        : "text-slate-800 bg-slate-200"
-                    }`}>
-                      {calcResult.totalSubsidy > 0
-                        ? `₹${calcResult.totalSubsidy.toLocaleString("en-IN")} Total Subsidy`
-                        : "No subsidy provided"}
-                    </span>
+                    <div className="self-start sm:self-center">
+                      <span className={`text-[10px] sm:text-[11px] font-black px-2.5 py-1 rounded-full shadow-xs inline-block ${
+                        calcResult.totalSubsidy > 0
+                          ? "text-white bg-emerald-700"
+                          : "text-amber-900 bg-amber-100 border border-amber-300"
+                      }`}>
+                        {calcResult.totalSubsidy > 0
+                          ? `₹${calcResult.totalSubsidy.toLocaleString("en-IN")} Total Subsidy`
+                          : "No subsidy provided"}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Financial Breakdown */}
                   <div className="border-t border-emerald-200/70 pt-3 space-y-2 text-xs">
-                    <div className="flex items-center justify-between text-slate-600">
+                    <div className="flex items-start sm:items-center justify-between gap-2 text-slate-600">
                       <span className="font-medium">Indicative System Cost (Market Price):</span>
-                      <span className="font-bold text-slate-800">
+                      <span className="font-bold text-slate-800 shrink-0 font-mono">
                         ₹{calcResult.costMin.toLocaleString("en-IN")} - ₹{calcResult.costMax.toLocaleString("en-IN")}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-slate-700">
+                    <div className="flex items-start sm:items-center justify-between gap-2 text-slate-700">
                       <span>Central Govt Subsidy (PM Surya Ghar):</span>
-                      <span className={`font-bold font-mono ${calcResult.centralSubsidy > 0 ? "text-emerald-700" : "text-slate-500 italic"}`}>
+                      <span className={`font-bold font-mono shrink-0 ${calcResult.centralSubsidy > 0 ? "text-emerald-700" : "text-amber-800 text-[11px]"}`}>
                         {calcResult.centralSubsidy > 0 ? `- ₹${calcResult.centralSubsidy.toLocaleString("en-IN")}` : "No subsidy provided"}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-slate-700">
+                    <div className="flex items-start sm:items-center justify-between gap-2 text-slate-700">
                       <span>UP State Govt Subsidy (UPNEDA):</span>
-                      <span className={`font-bold font-mono ${calcResult.stateSubsidy > 0 ? "text-emerald-700" : "text-slate-500 italic"}`}>
+                      <span className={`font-bold font-mono shrink-0 ${calcResult.stateSubsidy > 0 ? "text-emerald-700" : "text-amber-800 text-[11px]"}`}>
                         {calcResult.stateSubsidy > 0 ? `- ₹${calcResult.stateSubsidy.toLocaleString("en-IN")}` : "No subsidy provided"}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between bg-emerald-600/10 p-2 rounded-xl border border-emerald-500/30">
-                      <span className="text-emerald-950 font-black">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-emerald-600/10 p-2.5 rounded-xl border border-emerald-500/30 gap-1">
+                      <span className="text-emerald-950 font-black text-xs">
                         {calcResult.totalSubsidy > 0 ? "Net Cost After Both Subsidies*:" : "Estimated System Price (No Subsidy):"}
                       </span>
-                      <span className="font-black text-emerald-800 text-base font-mono">
+                      <span className="font-black text-emerald-800 text-sm sm:text-base font-mono">
                         ₹{calcResult.netCostMin.toLocaleString("en-IN")} - ₹{calcResult.netCostMax.toLocaleString("en-IN")}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-slate-600 pt-0.5">
+                    <div className="flex items-center justify-between text-[11px] sm:text-xs text-slate-600 pt-0.5">
                       <span>Expected Monthly Bill Savings:</span>
-                      <span className="font-extrabold text-slate-900">
-                        ₹{calcResult.monthlySavings.toLocaleString("en-IN")}/month (₹{calcResult.yearlySavings.toLocaleString("en-IN")}/yr)
+                      <span className="font-extrabold text-slate-900 font-mono">
+                        ₹{calcResult.monthlySavings.toLocaleString("en-IN")}/month
                       </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Exact Subsidy Table in Step 2 */}
-                <div className="bg-black text-white rounded-2xl p-4 border border-slate-800 space-y-2 shadow-md">
+                <div className="bg-black text-white rounded-2xl p-3.5 sm:p-4 border border-slate-800 space-y-2 shadow-md">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-black uppercase tracking-wide text-white">
                       Official Subsidy Breakdown Table
                     </span>
-                    <span className="text-[10px] font-bold text-emerald-400">
-                      ★ Active: {calcResult.recommendedKw} kW
+                    <span className="text-[10px] font-bold text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                      ★ Active: {calcResult.recommendedKw >= 4 ? ">3 kW" : `${calcResult.recommendedKw} kW`}
                     </span>
                   </div>
 
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
+                    <table className="w-full text-left text-xs min-w-[300px]">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 font-bold text-[11px]">
+                        <tr className="border-b border-slate-800 text-slate-400 font-bold text-[10px] sm:text-[11px]">
                           <th className="py-2 px-2">Solar Size</th>
                           <th className="py-2 px-2">Central Subsidy</th>
                           <th className="py-2 px-2">UP State Subsidy</th>
@@ -544,38 +605,41 @@ export default function SolarCalculator() {
                             (row.kw === 1 && calcResult.recommendedKw === 1) ||
                             (row.kw === 2 && calcResult.recommendedKw === 2) ||
                             (row.kw === 3 && calcResult.recommendedKw === 3) ||
-                            (row.kw === 4 && calcResult.recommendedKw > 3);
+                            (row.kw === 4 && calcResult.recommendedKw >= 4);
 
                           return (
                             <tr
                               key={row.size}
-                              className={`transition-colors ${
+                              onClick={() => handleKwChange(row.kw)}
+                              className={`transition-colors cursor-pointer ${
                                 isHighlighted
                                   ? "bg-emerald-500/20 text-emerald-300 font-black"
-                                  : "text-slate-200"
+                                  : "text-slate-200 hover:bg-slate-900"
                               }`}
                             >
-                              <td className="py-2 px-2 font-bold flex items-center gap-1.5">
-                                {isHighlighted && <span className="text-[10px] text-amber-300">★</span>}
-                                <span>{row.size}</span>
+                              <td className="py-2 px-2 font-bold whitespace-nowrap">
+                                <span className="flex items-center gap-1.5">
+                                  {isHighlighted && <span className="text-[10px] text-amber-300">★</span>}
+                                  <span>{row.size}</span>
+                                </span>
                               </td>
-                              <td className="py-2.5 px-2 font-mono">
+                              <td className="py-2.5 px-2 font-mono text-[11px]">
                                 {row.central === "No subsidy provided" ? (
-                                  <span className="text-slate-400 italic text-[11px]">No subsidy provided</span>
+                                  <span className="text-amber-400/80 text-[10px]">No subsidy provided</span>
                                 ) : (
                                   row.central
                                 )}
                               </td>
-                              <td className="py-2.5 px-2 font-mono">
+                              <td className="py-2.5 px-2 font-mono text-[11px]">
                                 {row.state === "No subsidy provided" ? (
-                                  <span className="text-slate-400 italic text-[11px]">No subsidy provided</span>
+                                  <span className="text-amber-400/80 text-[10px]">No subsidy provided</span>
                                 ) : (
                                   row.state
                                 )}
                               </td>
-                              <td className="py-2.5 px-2 text-right font-mono font-black">
+                              <td className="py-2.5 px-2 text-right font-mono font-black text-[11px]">
                                 {row.total === "No subsidy provided" ? (
-                                  <span className="text-slate-400 italic font-normal text-[11px]">No subsidy provided</span>
+                                  <span className="text-amber-400/80 font-bold text-[10px]">No subsidy provided</span>
                                 ) : (
                                   <span className="text-amber-300">{row.total}</span>
                                 )}
