@@ -291,7 +291,7 @@ export const translations: Record<Language, Translations> = {
       titleHighlight: "Make Your Electricity Bill ₹0!",
       titleEnd: "Claim Up to ₹108,000 Govt Subsidy Directly in Your Bank Account",
       subtitle: "Free site survey across all Lucknow localities with guaranteed ₹108,000 DBT subsidy filing. Reduce your UPPCL electricity bill to ₹0 with certified Tata, Waaree & Adani solar panels and 25 years warranty.",
-      calcButton: "Check My ₹108,000 Subsidy & Savings Now →",
+      calcButton: "Calculate Budget & Claim 2% Discount Form →",
       whatsappButton: "Chat with Solar Engineer",
       benefitSurvey: "Free Roof Survey",
       benefitSurveySub: "Zero visit charges across Lucknow",
@@ -303,7 +303,7 @@ export const translations: Record<Language, Translations> = {
       couponBannerDesc: "Answer 3 quick questions below to unlock your verified discount coupon!"
     },
     calculator: {
-      title: "Solar Cost & Subsidy Calculator",
+      title: "☀️ Solar Cost Calculator & 2% Discount Form",
       subtitle: "Find out your exact solar system size, UPPCL net-metering savings, and guaranteed ₹108,000 govt subsidy.",
       step1Title: "Step 1: Your UPPCL Monthly Bill",
       q1Bill: "1. What is your average monthly electricity bill?",
@@ -319,7 +319,7 @@ export const translations: Record<Language, Translations> = {
       roofYes: "Yes, I have open roof",
       roofNo: "No",
       roofNotSure: "Not Sure, need engineer visit",
-      calcAction: "Check My UPPCL Subsidy & Zero-Bill Cost →",
+      calcAction: "Calculate Budget & Claim 2% Discount Form →",
       step2Title: "Step 2: Your Solar Setup & Subsidy",
       recommendedSize: "Recommended Solar Size",
       indicativeCost: "Approx Total Market Price",
@@ -520,7 +520,7 @@ export const translations: Record<Language, Translations> = {
       titleHighlight: "बिजली का बिल हमेशा के लिए 0 करें!",
       titleEnd: "और पाएं ₹108,000 की सीधी सरकारी सब्सिडी अपने बैंक खाते में",
       subtitle: "लखनऊ के सभी इलाकों में फ्री साइट सर्वे और ₹108,000 डायरेक्ट बैंक ट्रांसफर (DBT) सरकारी सब्सिडी की 100% गारंटी। टाटा, वारी व अडानी सोलर पैनल लगवाएं और अपना यूपीपीसीएल बिजली बिल हमेशा के लिए ₹0 करें।",
-      calcButton: "अपनी ₹108,000 सब्सिडी व बचत अभी चेक करें →",
+      calcButton: "बजट निकालें और 2% डिस्काउंट फॉर्म भरें →",
       whatsappButton: "सोलर इंजीनियर से बात करें",
       benefitSurvey: "छत का मुफ्त सर्वे",
       benefitSurveySub: "0 रुपया विज़िट चार्ज (पूरे लखनऊ में)",
@@ -532,7 +532,7 @@ export const translations: Record<Language, Translations> = {
       couponBannerDesc: "नीचे सिर्फ 3 आसान सवालों के जवाब दें और अपना डिस्काउंट कूपन अनलॉक करें!"
     },
     calculator: {
-      title: "सोलर खर्चा व सब्सिडी कैलकुलेटर",
+      title: "☀️ सोलर कॉस्ट कैलकुलेटर और 2% डिस्काउंट फॉर्म",
       subtitle: "जानें आपके घर के लिए सही सोलर साइज, यूपीपीसीएल नेट-मीटरिंग बचत और ₹108,000 सरकारी सब्सिडी।",
       step1Title: "स्टेप 1: आपका यूपीपीसीएल मासिक बिजली बिल",
       q1Bill: "1. आपका हर महीने औसत बिजली का बिल कितना आता है?",
@@ -548,7 +548,7 @@ export const translations: Record<Language, Translations> = {
       roofYes: "हाँ, अपनी खुली छत है",
       roofNo: "नहीं",
       roofNotSure: "पक्का नहीं, इंजीनियर को दिखाएंगे",
-      calcAction: "मेरा यूपीपीसीएल बिजली बिल सब्सिडी व शून्य-बिल खर्चा चेक करें →",
+      calcAction: "बजट निकालें और 2% डिस्काउंट फॉर्म भरें →",
       step2Title: "स्टेप 2: आपके घर के लिए सही सोलर व सब्सिडी",
       recommendedSize: "आपके घर के लिए सही सोलर क्षमता",
       indicativeCost: "अनुमानित कुल सिस्टम खर्चा",

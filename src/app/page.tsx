@@ -26,12 +26,12 @@ export default function HomePage() {
         <main className="flex-1">
           <HeroSection />
           <SolarCalculator />
+          <TestimonialsSection />
           <WhatsAppCTA />
           <WhySolarSection />
           <InstallationProcessSection />
           <BrandComparison />
           <AreaCoverage />
-          <TestimonialsSection />
 
           <FAQSection />
         </main>

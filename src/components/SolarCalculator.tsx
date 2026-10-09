@@ -175,11 +175,11 @@ export default function SolarCalculator() {
 
   const whatsappLeadMessage = encodeURIComponent(
     language === "hi"
-      ? `नमस्ते! मैंने BigIdeaSolar वेबसाइट पर ₹${billNumeric}/महीने बिल के लिए ${calcResult.recommendedKw}kW सोलर का एस्टीमेट निकाला है।\n\nसब्सिडी स्थिति: ${
+      ? `मैंने BigIdeaSolar वेबसाइट पर ₹${billNumeric}/महीने बिल के लिए ${calcResult.recommendedKw}kW सोलर का एस्टीमेट निकाला है।\n\nसब्सिडी स्थिति: ${
           calcResult.totalSubsidy > 0
             ? `कुल सब्सिडी ₹${calcResult.totalSubsidy.toLocaleString("en-IN")} (केंद्रीय: ₹${calcResult.centralSubsidy.toLocaleString("en-IN")} + यूपी: ₹${calcResult.stateSubsidy.toLocaleString("en-IN")})`
             : "No subsidy provided (1 kW)"
-        }\nमेरा कूपन कोड: ${generatedCoupon} (2% छूट)\nनाम: ${fullName || "ग्राहक"}\nइलाका: ${area}\nपसंदीदा ब्रांड: ${selectedBrand}\n\nकृपया मुझे फाइनल कोटेशन भेजें।`
+      }\nमेरा कूपन कोड: ${generatedCoupon} (2% छूट)\nनाम: ${fullName || "ग्राहक"}\nइलाका: ${area}\nपसंदीदा ब्रांड: ${selectedBrand}\n\nकृपया मुझे फाइनल Pricing भेजें।`
       : `Hello! I generated an estimate on BigIdeaSolar for a ${calcResult.recommendedKw}kW Solar System (${billRange} Bill).\n\nSubsidy Status: ${
           calcResult.totalSubsidy > 0
             ? `Total Subsidy ₹${calcResult.totalSubsidy.toLocaleString("en-IN")} (Central: ₹${calcResult.centralSubsidy.toLocaleString("en-IN")} + UP State: ₹${calcResult.stateSubsidy.toLocaleString("en-IN")})`
@@ -196,8 +196,18 @@ export default function SolarCalculator() {
   ];
 
   return (
-    <section id="calculator" className="py-6 sm:py-12 bg-slate-50 relative">
+    <section id="calculator" className="py-1 sm:py-12 bg-slate-50 relative">
       <div className="max-w-xl mx-auto px-3 sm:px-6">
+        {/* 🎁 Exclusive 2% Discount Notice Box above Calculator */}
+        <div className="mb-3.5 p-3 sm:p-3.5 bg-gradient-to-r from-amber-500/15 via-emerald-500/15 to-amber-500/15 border-2 border-amber-400/90 rounded-2xl flex items-center justify-center gap-2.5 shadow-xs text-center">
+          <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 shrink-0 animate-bounce" />
+          <p className="text-xs sm:text-sm font-black text-slate-900 tracking-tight leading-snug">
+            {language === "hi"
+              ? "🎁 अपना 2% डिस्काउंट कूपन पाने के लिए नीचे फॉर्म भरें!"
+              : "🎁 Fill the form below to get your 2% Instant Discount Coupon!"}
+          </p>
+        </div>
+
         {/* Step Container Card */}
         <div className="bg-white rounded-2xl sm:rounded-3xl shadow-md border border-slate-200 overflow-hidden">
           {/* Card Top Title Bar */}
@@ -214,13 +224,13 @@ export default function SolarCalculator() {
               )}
               <div>
                 <h2 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
-                  {step === 1 && (language === "hi" ? "सोलर कॉस्ट व सब्सिडी कैलकुलेटर" : "Solar Cost & Subsidy Calculator")}
+                  {step === 1 && (language === "hi" ? "☀️ सोलर कॉस्ट कैलकुलेटर और 2% डिस्काउंट फॉर्म" : "☀️ Solar Cost Calculator & 2% Discount Form")}
                   {step === 2 && (language === "hi" ? "आपका सोलर बजट व सब्सिडी विवरण" : "Your Solar Budget & Subsidy Breakdown")}
-                  {step === 3 && (language === "hi" ? "फ्री सोलर कोटेशन और 2% कूपन" : "Get Free Quote & 2% Coupon")}
+                  {step === 3 && (language === "hi" ? "फ्री साइट विजिट और 2% कूपन" : "Get Free Site Visit & 2% Coupon")}
                   {step === 4 && (language === "hi" ? "बधाई हो! आपका डिस्काउंट कूपन" : "Congratulations!")}
                 </h2>
                 <p className="text-[11px] text-slate-500">
-                  {step === 1 && (language === "hi" ? "1 kW (No subsidy) से लेकर 10 kW तक यूपी सरकार + केंद्र सब्सिडी जानें" : "Calculate accurate 1 kW to 10 kW budget with Central + UP State subsidies")}
+                  {step === 1 && (language === "hi" ? "1 kW से 10 kW तक बजट निकालें, सरकारी सब्सिडी जानें व 2% कूपन पाएं" : "Calculate accurate 1 kW to 10 kW budget, UP + Central subsidies & unlock your 2% discount coupon")}
                   {step === 2 && (language === "hi" ? "अनुशंसित क्षमता और ब्रांड चयन" : "Recommended capacity, subsidy slabs & brand selection")}
                   {step === 3 && (language === "hi" ? "कूपन कोड तुरंत पाने के लिए फॉर्म भरें" : "Fill details & get your unique coupon code instantly")}
                   {step === 4 && (language === "hi" ? "आपका सोलर डिस्काउंट कूपन एक्टिव है" : "Your Solar Discount Coupon is ready")}
@@ -918,7 +928,7 @@ export default function SolarCalculator() {
                     className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm shadow-md shadow-emerald-600/30 flex items-center justify-center gap-2 active:scale-[0.99] transition-all"
                   >
                     <MessageSquare className="w-4 h-4 fill-white" />
-                    <span>Get Instant Quote on WhatsApp</span>
+                    <span>Share Your Coupon on WhatsApp</span>
                   </a>
 
                   <p className="text-[10px] text-slate-500">

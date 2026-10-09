@@ -55,7 +55,7 @@ export default function HeroSection() {
                   </>
                 ) : (
                   <>
-                    Lucknow Mein Ghar Par <span className="text-emerald-400">Rooftop Solar Lagwayein</span>
+                      Lucknow Mein Ghar Par <span className="text-yellow-300">Rooftop Solar Lagwayein</span>
                   </>
                 )}
               </h1>

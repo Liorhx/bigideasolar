@@ -30,7 +30,7 @@ export default function InstallationProcessSection() {
   const p = t.processSection;
 
   return (
-    <section id="process" className="py-8 sm:py-14 bg-gradient-to-b from-white via-slate-50 to-white relative overflow-hidden">
+    <section id="process" className="py-4 sm:py-14 bg-gradient-to-b from-white via-slate-50 to-white relative overflow-hidden">
       {/* Background subtle grid pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
 
@@ -41,9 +41,9 @@ export default function InstallationProcessSection() {
             <Sparkles className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
             <span>{p.badge}</span>
           </div>
-          <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+          {/* <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
             {p.title}
-          </h2>
+          </h2> */}
           <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
             {p.subtitle}
           </p>

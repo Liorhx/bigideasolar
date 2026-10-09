@@ -20,7 +20,7 @@ export default function FAQSection() {
   );
 
   return (
-    <section id="faq" className="py-6 sm:py-10 bg-slate-50">
+    <section id="faq" className="py-2 sm:py-10 bg-slate-50">
       <div className="max-w-xl mx-auto px-3 sm:px-6">
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-4 sm:p-6 shadow-sm space-y-4">
           {/* Header (Matching Screen 10 Mockup) */}
