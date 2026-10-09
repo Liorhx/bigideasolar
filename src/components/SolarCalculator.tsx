@@ -196,7 +196,7 @@ export default function SolarCalculator() {
   ];
 
   return (
-    <section id="calculator" className="py-1 sm:py-12 bg-slate-50 relative">
+    <section id="calculator" className="py-1 sm:py-4 bg-slate-50 relative">
       <div className="max-w-xl mx-auto px-3 sm:px-6">
         {/* 🎁 Exclusive 2% Discount Notice Box above Calculator */}
         <div className="mb-3.5 p-3 sm:p-3.5 bg-gradient-to-r from-amber-500/15 via-emerald-500/15 to-amber-500/15 border-2 border-amber-400/90 rounded-2xl flex items-center justify-center gap-2.5 shadow-xs text-center">

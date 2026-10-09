@@ -16,7 +16,7 @@ export default function WhatsAppCTA() {
   );
 
   return (
-    <section className="py-1 sm:py-10 bg-slate-50">
+    <section className="py-1 sm:py-4 bg-slate-50">
       <div className="max-w-xl mx-auto px-3 sm:px-6">
         {/* Card Frame (Matching Screen 6 Mockup) */}
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">

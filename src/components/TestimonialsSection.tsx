@@ -145,7 +145,7 @@ export default function TestimonialsSection() {
   const current = installations[currentIndex];
 
   return (
-    <section className="py-2 sm:py-14 bg-gradient-to-b from-slate-50 via-white to-slate-50 overflow-hidden">
+    <section className="py-2 sm:py-4 bg-gradient-to-b from-slate-50 via-white to-slate-50 overflow-hidden">
       <div className="max-w-4xl mx-auto px-3 sm:px-6">
         {/* Section Header */}
         <div className="text-center space-y-2 mb-6 sm:mb-8">

@@ -30,7 +30,7 @@ export default function InstallationProcessSection() {
   const p = t.processSection;
 
   return (
-    <section id="process" className="py-4 sm:py-14 bg-gradient-to-b from-white via-slate-50 to-white relative overflow-hidden">
+    <section id="process" className="py-4 sm:py-4 bg-gradient-to-b from-white via-slate-50 to-white relative overflow-hidden">
       {/* Background subtle grid pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
 
