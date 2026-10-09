@@ -40,8 +40,10 @@ export function calculateSolar(billAmount: number, forceKw?: number): SolarCalcu
   // Approximate gross cost per kW before subsidy:
   // 1 kW: ₹55,000 - ₹70,000
   // 2 kW: ₹1,20,000 - ₹1,40,000
-  // 3 kW: ₹1,75,000 - ₹2,00,000
-  // >3 kW: ₹55,000 - ₹65,000 / kW
+  // 3 kW: ₹1,80,000 - ₹2,10,000
+  // 4 kW: ₹2,10,000 - ₹2,40,000
+  // 5 kW: ₹2,40,000 - ₹2,70,000
+  // 6 kW: ₹2,70,000 - ₹3,00,000
   let costMin = 0;
   let costMax = 0;
 
@@ -52,11 +54,20 @@ export function calculateSolar(billAmount: number, forceKw?: number): SolarCalcu
     costMin = 120000;
     costMax = 140000;
   } else if (kw === 3) {
-    costMin = 175000;
-    costMax = 200000;
+    costMin = 180000;
+    costMax = 210000;
+  } else if (kw === 4) {
+    costMin = 210000;
+    costMax = 240000;
+  } else if (kw === 5) {
+    costMin = 240000;
+    costMax = 270000;
+  } else if (kw === 6) {
+    costMin = 270000;
+    costMax = 300000;
   } else {
-    costMin = kw * 55000;
-    costMax = kw * 65000;
+    costMin = 270000 + (kw - 6) * 30000;
+    costMax = 300000 + (kw - 6) * 35000;
   }
 
   // Central PM Surya Ghar Subsidy:
@@ -104,9 +115,30 @@ export function calculateSolar(billAmount: number, forceKw?: number): SolarCalcu
   // 1 kW requires ~80-100 sq.ft shadow-free RCC / Tin roof area
   const roofAreaSqFt = kw * 90;
 
-  // Monthly savings = units generated * tariff
-  const unitsGeneratedMonthly = kw * 125;
-  const monthlySavings = Math.round(unitsGeneratedMonthly * tariffPerUnit);
+  // Monthly power bill savings (aligned with Step 1 monthly bill ranges & UPPCL net-meter generation):
+  // 1 kW: ~₹1,100 / month (replaces ₹800 - ₹1,500 bill)
+  // 2 kW: ~₹2,000 / month (replaces ₹1,500 - ₹2,500 bill)
+  // 3 kW: ~₹3,200 / month (replaces ₹2,500 - ₹4,000 bill)
+  // 4 kW: ~₹4,800 / month (replaces ₹4,000 - ₹5,500 bill)
+  // 5 kW: ~₹6,500 / month (replaces ₹5,500 - ₹7,500 bill)
+  // 6 kW: ~₹8,200 / month (replaces ₹7,500+ bill)
+  let monthlySavings = 0;
+  if (kw === 1) {
+    monthlySavings = 1100;
+  } else if (kw === 2) {
+    monthlySavings = 2000;
+  } else if (kw === 3) {
+    monthlySavings = 3200;
+  } else if (kw === 4) {
+    monthlySavings = 4800;
+  } else if (kw === 5) {
+    monthlySavings = 6500;
+  } else if (kw === 6) {
+    monthlySavings = 8200;
+  } else {
+    monthlySavings = kw * 1350;
+  }
+
   const yearlySavings = monthlySavings * 12;
   const savings25Years = yearlySavings * 25;
 

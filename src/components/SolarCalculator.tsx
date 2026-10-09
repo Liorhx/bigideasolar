@@ -56,7 +56,9 @@ export default function SolarCalculator() {
     { label: "₹800 - ₹1,500", value: 1200, size: "1 kW", subsidy: "No subsidy provided", kw: 1 },
     { label: "₹1,500 - ₹2,500", value: 2000, size: "2 kW", subsidy: "₹90,000 Subsidy", kw: 2 },
     { label: "₹2,500 - ₹4,000", value: 3200, size: "3 kW", subsidy: "₹1,08,000 Subsidy", kw: 3 },
-    { label: "₹4,000+", value: 5500, size: ">3 kW", subsidy: "₹1,08,000 Max", kw: 4 }
+    { label: "₹4,000 - ₹5,500", value: 4800, size: "4 kW", subsidy: "₹1,08,000 Subsidy", kw: 4 },
+    { label: "₹5,500 - ₹7,500", value: 6500, size: "5 kW", subsidy: "₹1,08,000 Subsidy", kw: 5 },
+    { label: "₹7,500+", value: 8500, size: "6 kW", subsidy: "₹1,08,000 Subsidy", kw: 6 }
   ];
 
   const handleBillSelect = (label: string, numeric: number) => {
@@ -192,7 +194,9 @@ export default function SolarCalculator() {
     { size: "1 kW", central: "No subsidy provided", state: "No subsidy provided", total: "No subsidy provided", kw: 1 },
     { size: "2 kW", central: "₹60,000", state: "₹30,000", total: "₹90,000", kw: 2 },
     { size: "3 kW", central: "₹78,000", state: "₹30,000*", total: "₹1,08,000", kw: 3 },
-    { size: ">3 kW", central: "₹78,000", state: "₹30,000*", total: "₹1,08,000", kw: 4 }
+    { size: "4 kW", central: "₹78,000", state: "₹30,000*", total: "₹1,08,000", kw: 4 },
+    { size: "5 kW", central: "₹78,000", state: "₹30,000*", total: "₹1,08,000", kw: 5 },
+    { size: "6 kW+", central: "₹78,000", state: "₹30,000*", total: "₹1,08,000", kw: 6 }
   ];
 
   return (
@@ -260,7 +264,7 @@ export default function SolarCalculator() {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {billOptions.map((opt) => {
                       const isSelected = billRange === opt.label;
                       const isNoSubsidy = opt.size === "1 kW";
@@ -401,10 +405,8 @@ export default function SolarCalculator() {
                       <tbody className="divide-y divide-slate-800/60 text-xs">
                         {subsidyTableRows.map((row) => {
                           const isHighlighted =
-                            (row.kw === 1 && calcResult.recommendedKw === 1) ||
-                            (row.kw === 2 && calcResult.recommendedKw === 2) ||
-                            (row.kw === 3 && calcResult.recommendedKw === 3) ||
-                            (row.kw === 4 && calcResult.recommendedKw > 3);
+                            (row.kw === calcResult.recommendedKw) ||
+                            (row.kw === 6 && calcResult.recommendedKw >= 6);
 
                           return (
                             <tr
@@ -480,14 +482,16 @@ export default function SolarCalculator() {
                       {billRange}
                     </span>
                   </div>
-                  <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 sm:gap-2">
                     {[
                       { kw: 1, label: "1 kW", sub: "No Subsidy" },
                       { kw: 2, label: "2 kW", sub: "₹90k Sub." },
                       { kw: 3, label: "3 kW", sub: "₹1.08L Sub." },
-                      { kw: 4, label: ">3 kW", sub: "₹1.08L Sub." }
+                      { kw: 4, label: "4 kW", sub: "₹1.08L Sub." },
+                      { kw: 5, label: "5 kW", sub: "₹1.08L Sub." },
+                      { kw: 6, label: "6 kW", sub: "₹1.08L Sub." }
                     ].map((tab) => {
-                      const isSelected = calcResult.recommendedKw === tab.kw || (tab.kw === 4 && calcResult.recommendedKw >= 4);
+                      const isSelected = calcResult.recommendedKw === tab.kw || (tab.kw === 6 && calcResult.recommendedKw >= 6);
                       return (
                         <button
                           key={tab.kw}
@@ -530,7 +534,7 @@ export default function SolarCalculator() {
                           {t.calculator.recommendedSize}
                         </span>
                         <p className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
-                          {calcResult.recommendedKw >= 4 ? ">3 kW" : `${calcResult.recommendedKw} kW`} Rooftop Solar
+                          {`${calcResult.recommendedKw} kW`} Rooftop Solar
                         </p>
                       </div>
                     </div>

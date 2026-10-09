@@ -43,7 +43,7 @@ export default function TestimonialsSection() {
     {
       id: 2,
       image: "/images/solar2.jpg",
-      name: language === "hi" ? "अमित त्रिवेदी" : "Amit Trivedi",
+      name: language === "hi" ? "अनिता त्रिवेदी" : "Anita Trivedi",
       area: language === "hi" ? "सेक्टर-डी, अलीगंज, लखनऊ" : "Sector D, Aliganj, Lucknow",
       system: language === "hi" ? "5 kW वारी मोनो PERC" : "5 kW Waaree Mono PERC",
       brand: "Waaree Solar",
@@ -60,7 +60,7 @@ export default function TestimonialsSection() {
     {
       id: 3,
       image: "/images/solar3.jpg",
-      name: language === "hi" ? "डॉ. विनय मिश्रा" : "Dr. Vinay Mishra",
+      name: language === "hi" ? "डॉ. वंदना मिश्रा" : "Dr. Vandana Mishra",
       area: language === "hi" ? "सेक्टर-14, इंदिरानगर, लखनऊ" : "Sector 14, Indira Nagar, Lucknow",
       system: language === "hi" ? "3.3 kW अडानी हाई-एफिशिएंसी" : "3.3 kW Adani Solar High-Efficiency",
       brand: "Adani Solar",
@@ -77,19 +77,19 @@ export default function TestimonialsSection() {
     {
       id: 4,
       image: "/images/solar4.jpg",
-      name: language === "hi" ? "सुनीता अग्रवाल" : "Sunita Agarwal",
+      name: language === "hi" ? "सुरेश अग्रवाल" : "Suresh Agarwal",
       area: language === "hi" ? "आशियाना, एलडीए कॉलोनी, लखनऊ" : "Ashiyana, LDA Colony, Lucknow",
-      system: language === "hi" ? "4 kW टाटा पावर सोलर" : "4 kW Tata Power Solar",
+      system: language === "hi" ? "3 kW टाटा पावर सोलर" : "3 kW Tata Power Solar",
       brand: "Tata Solar",
-      billBefore: "₹5,600",
-      billAfter: "₹190",
-      savingsPercent: "96%",
+      billBefore: "₹3,900",
+      billAfter: "₹120",
+      savingsPercent: "97%",
       subsidy: "₹108,000",
       subsidyDays: language === "hi" ? "बैंक लोन + सब्सिडी" : "Bank Loan + Subsidy",
       text:
         language === "hi"
-          ? "बिग आइडिया सोलर की मदद से बैंक से आसान सोलर लोन लिया। बिजली बिल में जितनी बचत होती है, उसी से लोन की किस्त भर जाती है। अपनी जेब से एक रुपया एक्स्ट्रा नहीं लगा!"
-          : "Took a low-interest solar bank loan with direct assistance from their team. The monthly electricity bill savings easily cover the loan EMI. Truly zero out-of-pocket investment!"
+          ? "बिग आइडिया सोलर की मदद से आशियाना में हमारी छत पर 3kW का सोलर सिस्टम लगा। आसान बैंक लोन सहायता मिली और बिजली बिल की बचत से ही लोन की किस्त आसानी से निकल जाती है। ₹108,000 की सब्सिडी भी समय पर बैंक में आ गई!"
+          : "Got a 3kW Tata Solar system installed on our Ashiyana rooftop. BigIdeaSolar helped with a low-interest solar bank loan where electricity bill savings easily cover the EMI. Truly zero out-of-pocket investment!"
     },
     {
       id: 5,
